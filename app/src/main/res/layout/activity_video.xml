@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <com.montnets.liveroom.view.LockableScrollView
+        android:id="@+id/lsv_player_root"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:scrollbars="none">
+
+        <RelativeLayout
+            android:id="@+id/surface_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.montnets.liveroom.view.PlayerView
+                android:id="@+id/player_view_main"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:isMain="true"/>
+
+            <com.montnets.liveroom.view.PlayerView
+                android:id="@+id/player_view_auxiliary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:isMain="false"/>
+
+            <ImageView
+                android:id="@+id/iv_preview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/bt_trans_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="投屏"/>
+
+        </RelativeLayout>
+
+    </com.montnets.liveroom.view.LockableScrollView>
+
+    <RelativeLayout
+        android:id="@+id/rl_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_top_gradient_60">
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:src="@drawable/ic_white_left_arrow"/>
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/full_screen_cover"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <com.flyco.tablayout.SlidingTabLayout
+        android:id="@+id/tab_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/lsv_player_root"
+        app:tl_indicator_anim_enable="true"
+        app:tl_indicator_color="#2b94ff"
+        app:tl_indicator_corner_radius="2dp"
+        app:tl_indicator_height="2dp"
+        app:tl_textBold="BOTH"
+        app:tl_indicator_width="20dp"
+        app:tl_tab_space_equal="true"
+        app:tl_textSelectColor="#2b94ff"
+        app:tl_textUnselectColor="#666666"
+        app:tl_textsize="14sp" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tab_indicator"/>
+
+</RelativeLayout>
