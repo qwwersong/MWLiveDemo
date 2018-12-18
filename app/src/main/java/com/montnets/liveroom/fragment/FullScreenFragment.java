@@ -22,6 +22,7 @@ import com.montnets.mwlive.LiveRoom;
 import com.montnets.mwlive.base.ScreenUtil;
 import com.montnets.mwlive.socket.OnReceivedMsgListener;
 import com.montnets.mwlive.socket.bean.IMMessage;
+import com.montnets.mwlive.socket.bean.MsgAnswerResult;
 import com.montnets.mwlive.socket.bean.MsgCustomize;
 import com.montnets.mwlive.socket.bean.MsgGift;
 import com.montnets.mwlive.socket.bean.MsgMessage;
@@ -196,7 +197,12 @@ public class FullScreenFragment extends Fragment {
         }
 
         @Override
-        public void onReceivedPaper(MsgQuestionnaire questionnaire) {
+        public void onReceivedQuestion(MsgQuestionnaire questionnaire) {
+
+        }
+
+        @Override
+        public void onReceivedAnswerResult(MsgAnswerResult answerResult) {
 
         }
     };
