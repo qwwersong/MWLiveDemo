@@ -325,6 +325,7 @@ public class VideoActivity extends AppCompatActivity {
         }
     }
 
+    //小屏全屏切换
     private void switchScreen() {
         OrientationManager.getInstance().isClickedZoom = true;
         if (orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
@@ -334,6 +335,7 @@ public class VideoActivity extends AppCompatActivity {
         }
     }
 
+    //切换主副屏
     private void switchVideo() {
         if (playerAuxiliary.getVisibility() != View.VISIBLE) {
             return;
@@ -395,6 +397,7 @@ public class VideoActivity extends AppCompatActivity {
     private void handleVideo(VideoDetail.ObjEntity entity) {
         playerMain.initConfig(PlayerView.TYPE_VIDEO);
         playerAuxiliary.initConfig(PlayerView.TYPE_VIDEO);
+
         String videoUrl480 = entity.getVideoSource().getPlayUrl480();
         String videoUrl720 = entity.getVideoSource().getPlayUrl720();
         if (!TextUtils.isEmpty(videoUrl)) {
@@ -412,10 +415,6 @@ public class VideoActivity extends AppCompatActivity {
         playerMain.setRateList(rateList);
         playerMain.setRateMap(rateMainMap);
         playerMain.startPlayVideo();
-
-//        playerAuxiliary.setRateList(rateList);  //TODO::去掉，测试用
-//        playerAuxiliary.setRateMap(rateMainMap);
-//        playerAuxiliary.startPlayVideo();
     }
 
     /**
@@ -441,11 +440,12 @@ public class VideoActivity extends AppCompatActivity {
                                     .into(ivPreView);
                             playerMain.setVisibility(View.INVISIBLE);
                             playerAuxiliary.setVisibility(View.INVISIBLE);
+                            btTransTv.setVisibility(View.INVISIBLE);
                             break;
                         case 1: //直播中
                             handleLiving(entity);
                             break;
-                        case 2: //直播结束
+                        case 2: //直播结束，观看直播录像
                             handleLiveEnd(entity);
                             break;
                     }
@@ -516,9 +516,30 @@ public class VideoActivity extends AppCompatActivity {
 
     private void handleLiveEnd(LiveDetail.ObjBean entity) {
         playerMain.initConfig(PlayerView.TYPE_VIDEO);
-        playerAuxiliary.setVisibility(View.GONE);//TODO::直播录制双画面，需求问题
+        playerAuxiliary.initConfig(PlayerView.TYPE_VIDEO);
+        rateList.clear();
+        rateMainMap.clear();
+
+        //设置主屏
         String liveAfter = entity.getLiveAfter();
-        playerMain.startPlayVideo(liveAfter);
+        rateList.add(VideoConstants.MODEL_ORIGINAL);
+        rateMainMap.put(VideoConstants.MODEL_ORIGINAL, liveAfter);
+        playerMain.setRateList(rateList);
+        playerMain.setRateMap(rateMainMap);
+        playerMain.startPlayVideo();
+
+        //设置辅屏
+        String slaveLiveAfter = entity.getSlaveLiveInfo().getLiveAfter();
+        if (TextUtils.isEmpty(slaveLiveAfter)) {
+            playerAuxiliary.setVisibility(View.GONE);
+        } else {
+            rateList.add(VideoConstants.MODEL_ORIGINAL);
+            rateAuxMap.put(VideoConstants.MODEL_ORIGINAL, slaveLiveAfter);
+            playerAuxiliary.setRateList(rateList);
+            playerAuxiliary.setRateMap(rateMainMap);
+            playerAuxiliary.setVisibility(View.VISIBLE);
+            playerAuxiliary.startPlayVideo();
+        }
     }
 
 }
