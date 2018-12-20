@@ -17,15 +17,14 @@ import android.widget.TextView;
 
 import com.montnets.liveroom.R;
 import com.montnets.liveroom.adapter.IMAdapter;
+import com.montnets.liveroom.im.IMManager;
+import com.montnets.liveroom.im.OnPlayerStateListener;
+import com.montnets.liveroom.im.bean.MsgVideoState;
 import com.montnets.liveroom.utils.OrientationManager;
-import com.montnets.mwlive.LiveRoom;
 import com.montnets.mwlive.base.CommonHandler;
-import com.montnets.mwlive.base.LogUtil;
 import com.montnets.mwlive.player.OnPlayerListener;
 import com.montnets.mwlive.player.PlayException;
 import com.montnets.mwlive.player.PlayerConstants;
-import com.montnets.mwlive.socket.OnPlayerStateListener;
-import com.montnets.mwlive.socket.bean.MsgVideoState;
 import com.montnets.mwlive.view.MWTextureView;
 
 import java.util.ArrayList;
@@ -44,12 +43,13 @@ public class PlayerView extends RelativeLayout implements CommonHandler.HandlerC
     public static final int STATE_FINISH = 3;
     public static final int STATE_ERROR = 4;
     public static final int STATE_BUFFING = 5;
+
     private static final int TIME_DELAY = 5 * 1000;
     private static final int MSG_HIDE = 0;
     private Context context;
-    private MWTextureView playerView;
-    private VideoCover videoCover;
-    private MyMediaController mediaController;
+    private MWTextureView playerView;           //播放器
+    private VideoCover videoCover;              //播放器覆盖层（用于当前播放器状态）
+    private MyMediaController mediaController;  //播放器控制器（只用于播放点播视频）
     private RelativeLayout rlContainer;
     private TextView tvCopyRight;               //水印控件
 
@@ -61,7 +61,7 @@ public class PlayerView extends RelativeLayout implements CommonHandler.HandlerC
     private HashMap<String, String> rateMap;
     private OnPlayerViewListener onPlayerViewListener;
 
-    private PlayerLayoutManager layoutManager;
+    private PlayerLayoutManager layoutManager;  //播放器布局管理类
 
     private CommonHandler handler = new CommonHandler(this);
 
@@ -71,8 +71,7 @@ public class PlayerView extends RelativeLayout implements CommonHandler.HandlerC
     }
 
     public PlayerView(Context context) {
-        super(context);
-        initView(context);
+        this(context, null);
     }
 
     public PlayerView(Context context, AttributeSet attrs) {
@@ -109,16 +108,7 @@ public class PlayerView extends RelativeLayout implements CommonHandler.HandlerC
         } else {
             layoutManager.setLayoutType(rlContainer, PlayerLayoutManager.TYPE_SMALL);
         }
-        LiveRoom.getInstance().registerOnPlayerStateListener(new OnPlayerStateListener() {
-            @Override
-            public void onPlayerState(MsgVideoState msgVideoState) {
-                if (isMain) {
-                    setVideoState(msgVideoState.data.live_status);
-                } else {
-                    setVideoState(msgVideoState.data.slave_status);
-                }
-            }
-        });
+
         initListener();
     }
 
@@ -174,40 +164,34 @@ public class PlayerView extends RelativeLayout implements CommonHandler.HandlerC
             @Override
             public void onClick(View v) {
                 if (!isMain) {
-                    //show
-                    showHeader();
+                    if (enableShow) {
+                        showHeader();
+                    }
 
                     onPlayerViewListener.onClick();
                 } else {
-                    if (tag == 0) {
-                        //hide
-                        hideHeader();
-                    } else {
-                        //show
-                        showHeader();
+                    if (enableShow) {
+                        if (tag == 0) {
+                            hideHeader();
+                        } else {
+                            showHeader();
+                        }
                     }
                 }
             }
         });
-    }
 
-    private void showHeader(){
-        onPlayerViewListener.showHeader();
-        mediaController.setVisibility(View.VISIBLE);
-        tag = 0;
-        handler.sendEmptyMessageDelayed(MSG_HIDE, TIME_DELAY);
+        IMManager.getInstance().registerOnPlayerStateListener(new OnPlayerStateListener() {
+            @Override
+            public void onPlayerState(MsgVideoState msgVideoState) {
+                if (isMain) {
+                    setVideoState(msgVideoState.data.live_status);
+                } else {
+                    setVideoState(msgVideoState.data.slave_status);
+                }
+            }
+        });
     }
-
-    private void hideHeader(){
-        onPlayerViewListener.hideHeader();
-        mediaController.setVisibility(View.GONE);
-        tag = 1;
-        if (handler.hasMessages(MSG_HIDE)) {
-            handler.removeMessages(MSG_HIDE);
-        }
-    }
-
-    private int tag = 0;
 
     public void initConfig(int type) {
         this.type = type;
@@ -220,23 +204,6 @@ public class PlayerView extends RelativeLayout implements CommonHandler.HandlerC
                 mediaController.setVisibility(View.GONE);
             }
         }
-    }
-
-    public void setMain(boolean isMain) {
-        this.isMain = isMain;
-        if (type == TYPE_VIDEO) {
-            if (isMain) {
-                mediaController.setVisibility(View.VISIBLE);
-                tvCopyRight.setVisibility(View.VISIBLE);
-            } else {
-                mediaController.setVisibility(View.GONE);
-                tvCopyRight.setVisibility(View.GONE);
-            }
-        }
-    }
-
-    public boolean isMain() {
-        return isMain;
     }
 
     public interface OnPlayerViewListener {
@@ -281,16 +248,42 @@ public class PlayerView extends RelativeLayout implements CommonHandler.HandlerC
                     videoCover.showTip("播放结束");
                     break;
                 case PlayerConstants.STATE_BUFFERING:
-                    playState = STATE_BUFFING;
-                    videoCover.showBuffering();
-                    if (type == TYPE_VIDEO) {
-                        mediaController.stopTimer();
+                    if (playState != STATE_FINISH) {//这个判断原因：聊天室流状态和播放器状态在结束时可能会冲突
+                        playState = STATE_BUFFING;
+                        videoCover.showBuffering();
+                        if (type == TYPE_VIDEO) {
+                            mediaController.stopTimer();
+                        }
                     }
                     break;
             }
         }
     };
 
+    private void setVideoState(int state) {
+        switch (state) {
+            case PlayerConstants.LIVE_STATUS_PREVIEW:
+                playState = STATE_ERROR;
+                videoCover.showTip("视频未审核");
+                break;
+            case PlayerConstants.LIVE_STATUS_LIVING:
+                break;
+            case PlayerConstants.LIVE_STATUS_END:
+                playState = STATE_FINISH;
+                videoCover.showTip("播放结束");
+                break;
+            case PlayerConstants.LIVE_STATUS_ERROR:
+                playState = STATE_ERROR;
+                videoCover.showTip("异常中断");
+                break;
+            case PlayerConstants.LIVE_STATUS_TIMEOUT:
+                playState = STATE_ERROR;
+                videoCover.showTip("直播超时");
+                break;
+        }
+    }
+
+    //==================================播放控制=================================
     public int getPlayState(){
         return playState;
     }
@@ -324,16 +317,6 @@ public class PlayerView extends RelativeLayout implements CommonHandler.HandlerC
         }
     }
 
-    private void switchModelPlay(String url) {
-        if (mediaController.getVisibility() == View.VISIBLE) {
-            if (playState == STATE_PAUSE) {
-                mediaController.startPlay();
-            } else if (playState == STATE_PLAY) {
-                playerView.startPlay(url, mediaController.getCurrentTime());
-            }
-        }
-    }
-
     public void stopPlay() {
         if (mediaController != null) {
             mediaController.stopProgress();
@@ -362,88 +345,47 @@ public class PlayerView extends RelativeLayout implements CommonHandler.HandlerC
         playerView.reset();
     }
 
-    private void setVideoState(int state) {
-        switch (state) {
-            case PlayerConstants.LIVE_STATUS_PREVIEW:
-                videoCover.showTip("视频未审核");
-                break;
-            case PlayerConstants.LIVE_STATUS_LIVING:
-                break;
-            case PlayerConstants.LIVE_STATUS_END:
-                videoCover.showTip("播放结束");
-                break;
-            case PlayerConstants.LIVE_STATUS_ERROR:
-                videoCover.showTip("异常中断");
-                break;
-            case PlayerConstants.LIVE_STATUS_TIMEOUT:
-                videoCover.showTip("直播超时");
-                break;
-        }
-    }
+    //====================================设置属性===================================
 
-    private void showPop(TextView modelView) {
-        RecyclerView lvModel = new RecyclerView(context);
-        lvModel.setBackgroundColor(Color.WHITE);
-        lvModel.setLayoutManager(new LinearLayoutManager(context));
-        IMAdapter modelAdapter = new IMAdapter(context, rateList);
-        lvModel.setAdapter(modelAdapter);
-        final SmartPopupWindow popupWindow = SmartPopupWindow.Builder
-                .build((Activity) context, lvModel)
-                .createPopupWindow();
-        popupWindow.showAtAnchorView(modelView, VerticalPosition.ABOVE, HorizontalPosition.CENTER);
-        modelAdapter.setOnItemClickListener(new IMAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                String model = rateList.get(position);
-                String play_url = rateMap.get(model);
-                mediaController.setModelText(model);
-                if (type == TYPE_LIVE) {
-                    LogUtil.e("pp", "直播 分辨率 = " + rateList.get(position) + "url = " + play_url);
-                    playerView.startPlay(play_url);
-                } else if (type == TYPE_VIDEO) {
-                    LogUtil.e("pp", "短视频 分辨率 = " + rateList.get(position) + "url = " + play_url);
-                    switchModelPlay(play_url);
-                }
-                popupWindow.dismiss();
-            }
-        });
-    }
-
+    /**
+     * 设置水印数据
+     */
     public void setCopyRight(String copyRight){
         tvCopyRight.setText(copyRight);
     }
 
+    /**
+     * 设置支持的分辨率列表
+     */
     public void setRateList(ArrayList<String> rateList) {
         this.rateList = rateList;
     }
 
+    /**
+     * 设置分辨率地址数据
+     */
     public void setRateMap(HashMap<String, String> rateMap) {
         this.rateMap = rateMap;
     }
 
-    public void showSmallView() {
-        layoutManager.setLayoutType(rlContainer, PlayerLayoutManager.TYPE_SMALL);
-        setMain(false);
-    }
-
-    public void showBigView() {
-        layoutManager.setLayoutType(rlContainer, PlayerLayoutManager.TYPE_BIG);
-        setMain(true);
-    }
-
-    public void showFullView() {
-        layoutManager.setLayoutType(rlContainer, PlayerLayoutManager.TYPE_FULL);
-        setMain(true);
-    }
-
-    public void showMediaController(boolean isShow) {
-        if (isMain && type == TYPE_VIDEO) {
-            if (isShow) {
+    /**
+     * 设置主屏
+     */
+    public void setMain(boolean isMain) {
+        this.isMain = isMain;
+        if (type == TYPE_VIDEO) {
+            if (isMain) {
                 mediaController.setVisibility(View.VISIBLE);
+                tvCopyRight.setVisibility(View.VISIBLE);
             } else {
                 mediaController.setVisibility(View.GONE);
+                tvCopyRight.setVisibility(View.GONE);
             }
         }
+    }
+
+    public boolean isMain() {
+        return isMain;
     }
 
     @Override
@@ -473,5 +415,105 @@ public class PlayerView extends RelativeLayout implements CommonHandler.HandlerC
             }
         }
         super.onConfigurationChanged(newConfig);
+    }
+
+    //==================================状态显示========================================
+
+    /**
+     * 显示小屏
+     */
+    public void showSmallView() {
+        layoutManager.setLayoutType(rlContainer, PlayerLayoutManager.TYPE_SMALL);
+        setMain(false);
+    }
+
+    /**
+     * 显示大屏
+     */
+    public void showBigView() {
+        layoutManager.setLayoutType(rlContainer, PlayerLayoutManager.TYPE_BIG);
+        setMain(true);
+    }
+
+    /**
+     * 显示全屏
+     */
+    public void showFullView() {
+        layoutManager.setLayoutType(rlContainer, PlayerLayoutManager.TYPE_FULL);
+        setMain(true);
+    }
+
+    /**
+     * 播放器控制器显示
+     */
+    public void showMediaController(boolean isShow) {
+        if (isMain && type == TYPE_VIDEO) {
+            if (isShow) {
+                mediaController.setVisibility(View.VISIBLE);
+            } else {
+                mediaController.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    private boolean enableShow;
+    public void enableShowHeader(boolean enable){
+        enableShow = enable;
+    }
+
+    private int tag = 0;
+    private void showHeader(){
+        onPlayerViewListener.showHeader();
+        mediaController.setVisibility(View.VISIBLE);
+        tag = 0;
+        handler.sendEmptyMessageDelayed(MSG_HIDE, TIME_DELAY);
+    }
+
+    private void hideHeader(){
+        onPlayerViewListener.hideHeader();
+        mediaController.setVisibility(View.GONE);
+        tag = 1;
+        if (handler.hasMessages(MSG_HIDE)) {
+            handler.removeMessages(MSG_HIDE);
+        }
+    }
+
+    /**
+     * 显示分辨率切换布局
+     */
+    private void showPop(TextView modelView) {
+        RecyclerView lvModel = new RecyclerView(context);
+        lvModel.setBackgroundColor(Color.WHITE);
+        lvModel.setLayoutManager(new LinearLayoutManager(context));
+        IMAdapter modelAdapter = new IMAdapter(context, rateList);
+        lvModel.setAdapter(modelAdapter);
+        final SmartPopupWindow popupWindow = SmartPopupWindow.Builder
+                .build((Activity) context, lvModel)
+                .createPopupWindow();
+        popupWindow.showAtAnchorView(modelView, VerticalPosition.ABOVE, HorizontalPosition.CENTER);
+        modelAdapter.setOnItemClickListener(new IMAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                String model = rateList.get(position);
+                String play_url = rateMap.get(model);
+                mediaController.setModelText(model);
+                if (type == TYPE_LIVE) {
+                    playerView.startPlay(play_url);
+                } else if (type == TYPE_VIDEO) {
+                    switchModelPlay(play_url);
+                }
+                popupWindow.dismiss();
+            }
+        });
+    }
+
+    private void switchModelPlay(String url) {
+        if (mediaController.getVisibility() == View.VISIBLE) {
+            if (playState == STATE_PAUSE) {
+                mediaController.startPlay();
+            } else if (playState == STATE_PLAY) {
+                playerView.startPlay(url, mediaController.getCurrentTime());
+            }
+        }
     }
 }

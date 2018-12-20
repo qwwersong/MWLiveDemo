@@ -17,22 +17,22 @@ import android.widget.Toast;
 
 import com.montnets.liveroom.R;
 import com.montnets.liveroom.activity.VideoActivity;
+import com.montnets.liveroom.im.IMManager;
+import com.montnets.liveroom.im.OnHandleMsgListener;
+import com.montnets.liveroom.im.bean.IMMessage;
+import com.montnets.liveroom.im.bean.MsgCustomize;
+import com.montnets.liveroom.im.bean.MsgGift;
+import com.montnets.liveroom.im.bean.MsgMessage;
+import com.montnets.liveroom.im.bean.MsgNotice;
+import com.montnets.liveroom.im.bean.MsgSilence;
+import com.montnets.liveroom.im.bean.MsgStar;
+import com.montnets.liveroom.im.bean.MsgSystemTip;
 import com.montnets.liveroom.utils.InputMethodUtils;
-import com.montnets.mwlive.LiveRoom;
 import com.montnets.mwlive.base.ScreenUtil;
-import com.montnets.mwlive.socket.OnReceivedMsgListener;
-import com.montnets.mwlive.socket.bean.IMMessage;
-import com.montnets.mwlive.socket.bean.MsgAnswerResult;
-import com.montnets.mwlive.socket.bean.MsgCustomize;
-import com.montnets.mwlive.socket.bean.MsgGift;
-import com.montnets.mwlive.socket.bean.MsgMessage;
-import com.montnets.mwlive.socket.bean.MsgNotice;
-import com.montnets.mwlive.socket.bean.MsgQuestionnaire;
-import com.montnets.mwlive.socket.bean.MsgSilence;
-import com.montnets.mwlive.socket.bean.MsgStar;
-import com.montnets.mwlive.socket.bean.MsgSystemTip;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import master.flame.danmaku.danmaku.model.BaseDanmaku;
 import master.flame.danmaku.danmaku.model.IDisplayer;
@@ -102,7 +102,7 @@ public class FullScreenFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        LiveRoom.getInstance().unregister(onReceivedMsgListener);
+        IMManager.getInstance().unregister(onHandleMsgListener);
         if (danmakuView != null) {
             danmakuView.release();
             danmakuView = null;
@@ -134,7 +134,7 @@ public class FullScreenFragment extends Fragment {
                 if (TextUtils.isEmpty(msgContent)) {
                     Toast.makeText(getActivity(), "输入内容不能为空！", Toast.LENGTH_LONG).show();
                 } else {
-                    LiveRoom.getInstance().sendMessage(new IMMessage(msgContent));
+                    IMManager.getInstance().sendMessage(new IMMessage(msgContent));
                     etInput.setText("");
                     hideFullKeyboard();
                 }
@@ -143,7 +143,7 @@ public class FullScreenFragment extends Fragment {
     }
 
     private void initLiveRoom() {
-        LiveRoom.getInstance().registerOnReceivedMsgListener(onReceivedMsgListener);
+        IMManager.getInstance().registerOnHandleMsgListener(onHandleMsgListener);
     }
 
     public void hideFullKeyboard() {
@@ -163,7 +163,7 @@ public class FullScreenFragment extends Fragment {
         }
     }
 
-    OnReceivedMsgListener onReceivedMsgListener = new OnReceivedMsgListener() {
+    OnHandleMsgListener onHandleMsgListener = new OnHandleMsgListener() {
         @Override
         public void onReceivedMessage(MsgMessage message) {
             String msg = message.data.msgbody;
@@ -177,32 +177,26 @@ public class FullScreenFragment extends Fragment {
 
         @Override
         public void onReceivedNotice(MsgNotice notice) {
+
         }
 
         @Override
         public void onReceivedStar(MsgStar star) {
+
         }
 
         @Override
         public void onReceivedCustomMsg(MsgCustomize customize) {
+
         }
 
         @Override
         public void onReceivedSysTip(MsgSystemTip systemTip) {
+
         }
 
         @Override
         public void onReceivedSilence(MsgSilence silence) {
-
-        }
-
-        @Override
-        public void onReceivedQuestion(MsgQuestionnaire questionnaire) {
-
-        }
-
-        @Override
-        public void onReceivedAnswerResult(MsgAnswerResult answerResult) {
 
         }
     };
@@ -253,22 +247,10 @@ public class FullScreenFragment extends Fragment {
         };
     }
 
-//    private void setListenerToRootView() {
-//        final View rootView = getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
-//        rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-//            @Override
-//            public void onGlobalLayout() {
-//                boolean mKeyboardUp = DisplayUtil.isKeyboardShown(rootView);
-//                if (mKeyboardUp) {
-//                    rlInputLayout.setVisibility(View.VISIBLE);
-//                    etInput.setFocusable(true);
-//                    etInput.setFocusableInTouchMode(true);
-//                    etInput.requestFocus();
-//                    etInput.requestFocusFromTouch();
-//                } else {
-//                    rlInputLayout.setVisibility(View.GONE);
-//                }
-//            }
-//        });
-//    }
+    public List<View> getExcludeView(){
+        List<View> views = new ArrayList<>();
+        views.add(etInput);
+        views.add(tvSend);
+        return views;
+    }
 }

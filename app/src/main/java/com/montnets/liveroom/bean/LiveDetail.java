@@ -6,10 +6,11 @@ import java.io.Serializable;
  * 直播详情bean
  */
 public class LiveDetail implements Serializable {
+
     /**
      * code : 200
      * msg : 成功
-     * obj : {"appointNum":0,"beginTime":"1970-01-01 08:00:00","copyrightContent":"","createTime":"2018-11-29 09:04:21","currentTime":"2018-11-29 09:20:39","del":0,"endTime":"1970-01-01 08:00:00","id":"169956480122945153","isrecord":1,"istranscode":0,"liveAfter":"","liveAfterType":1,"liveCover":"","liveName":"双画面直播h","liveStatus":0,"liveSwitch":1,"liveTextImgs":"","liveWay":2,"m3u8Url":"http://testhls.facebac.com/live/afb98a0a9b79573235eb/playlist.m3u8?token=22fd832373133c8d64ff&secret=bcc68a45e15c23ede1bb63824b8f3231&ckey=f4a05ce01b8410f2464f2044e632e56c&xstToken=ae8bcdf8","m3u8Url480":"","m3u8Url720":"","masterId":"169956480122945153","planTime":"1970-01-01 08:00:00","playUrl":"rtmp://testdown.facebac.com/live/afb98a0a9b79573235eb?token=22fd832373133c8d64ff&secret=bcc68a45e15c23ede1bb63824b8f3231&ckey=f4a05ce01b8410f2464f2044e632e56c&xstToken=ae8bcdf8","playUrl480":"","playUrl720":"","preventRecordScreen":0,"pushUrl":"rtmp://testpush.facebac.com/live/afb98a0a9b79573235eb?token=22fd832373133c8d64ff&secret=bcc68a45e15c23ede1bb63824b8f3231&push_code=ae8bcdf8&ckey=f4a05ce01b8410f2464f2044e632e56c","shareUrl":"http://nx.facebac.com/H5/vLive.html?liveId=169956480122945153","shiftTime":"1970-01-01 08:00:00","slaveLiveInfo":{"m3u8Url":"http://testhls.facebac.com/live/b78c603c23d5b60ef213/playlist.m3u8?token=22fd832373133c8d64ff&secret=32de807e282e8d1728d05817a0890906&ckey=f4a05ce01b8410f2464f2044e632e56c&xstToken=cf1dddb5","m3u8Url480":"","m3u8Url720":"","playUrl":"rtmp://testdown.facebac.com/live/b78c603c23d5b60ef213?token=22fd832373133c8d64ff&secret=32de807e282e8d1728d05817a0890906&ckey=f4a05ce01b8410f2464f2044e632e56c&xstToken=cf1dddb5","playUrl480":"","playUrl720":"","pushUrl":"rtmp://testpush.facebac.com/live/b78c603c23d5b60ef213?token=22fd832373133c8d64ff&secret=32de807e282e8d1728d05817a0890906&push_code=cf1dddb5&ckey=f4a05ce01b8410f2464f2044e632e56c","liveAfter":""},"slavePushUrl":"","thumbsUp":0,"totalViews":0,"updateTime":"2018-11-29 09:04:21","userId":"45"}
+     * obj : {"appointNum":0,"beginTime":"1970-01-01 08:00:00","copyrightContent":"","createTime":"2018-11-29 09:04:21","currentTime":"2018-11-29 09:20:39","del":0,"endTime":"1970-01-01 08:00:00","id":"169956480122945153","isrecord":1,"istranscode":0,"liveAfter":"25883798818259030","liveAfterUrl":"http://testv.facebac.com/live/581daa97b4723c20df9e/42bc682dd528ab2b73c8/base/20181219103420/42bc682dd528ab2b73c8-20181219103420.m3u8?xstToken=dfb99b8a","liveAfterType":1,"liveCover":"","liveName":"双画面直播h","liveStatus":0,"liveSwitch":1,"liveTextImgs":"","liveWay":2,"m3u8Url":"http://testhls.facebac.com/live/afb98a0a9b79573235eb/playlist.m3u8?token=22fd832373133c8d64ff&secret=bcc68a45e15c23ede1bb63824b8f3231&ckey=f4a05ce01b8410f2464f2044e632e56c&xstToken=ae8bcdf8","m3u8Url480":"","m3u8Url720":"","masterId":"169956480122945153","planTime":"1970-01-01 08:00:00","playUrl":"rtmp://testdown.facebac.com/live/afb98a0a9b79573235eb?token=22fd832373133c8d64ff&secret=bcc68a45e15c23ede1bb63824b8f3231&ckey=f4a05ce01b8410f2464f2044e632e56c&xstToken=ae8bcdf8","playUrl480":"","playUrl720":"","preventRecordScreen":0,"pushUrl":"rtmp://testpush.facebac.com/live/afb98a0a9b79573235eb?token=22fd832373133c8d64ff&secret=bcc68a45e15c23ede1bb63824b8f3231&push_code=ae8bcdf8&ckey=f4a05ce01b8410f2464f2044e632e56c","shareUrl":"http://nx.facebac.com/H5/vLive.html?liveId=169956480122945153","shiftTime":"1970-01-01 08:00:00","slaveLiveInfo":{"m3u8Url":"http://testhls.facebac.com/live/b78c603c23d5b60ef213/playlist.m3u8?token=22fd832373133c8d64ff&secret=32de807e282e8d1728d05817a0890906&ckey=f4a05ce01b8410f2464f2044e632e56c&xstToken=cf1dddb5","m3u8Url480":"","m3u8Url720":"","playUrl":"rtmp://testdown.facebac.com/live/b78c603c23d5b60ef213?token=22fd832373133c8d64ff&secret=32de807e282e8d1728d05817a0890906&ckey=f4a05ce01b8410f2464f2044e632e56c&xstToken=cf1dddb5","playUrl480":"","playUrl720":"","pushUrl":"rtmp://testpush.facebac.com/live/b78c603c23d5b60ef213?token=22fd832373133c8d64ff&secret=32de807e282e8d1728d05817a0890906&push_code=cf1dddb5&ckey=f4a05ce01b8410f2464f2044e632e56c","liveAfterUrl":""},"slavePushUrl":"","thumbsUp":0,"totalViews":0,"updateTime":"2018-11-29 09:04:21","userId":"45"}
      */
 
     private String code;
@@ -52,7 +53,8 @@ public class LiveDetail implements Serializable {
          * id : 169956480122945153
          * isrecord : 1
          * istranscode : 0
-         * liveAfter :
+         * liveAfter : 25883798818259030
+         * liveAfterUrl : http://testv.facebac.com/live/581daa97b4723c20df9e/42bc682dd528ab2b73c8/base/20181219103420/42bc682dd528ab2b73c8-20181219103420.m3u8?xstToken=dfb99b8a
          * liveAfterType : 1
          * liveCover :
          * liveName : 双画面直播h
@@ -72,7 +74,7 @@ public class LiveDetail implements Serializable {
          * pushUrl : rtmp://testpush.facebac.com/live/afb98a0a9b79573235eb?token=22fd832373133c8d64ff&secret=bcc68a45e15c23ede1bb63824b8f3231&push_code=ae8bcdf8&ckey=f4a05ce01b8410f2464f2044e632e56c
          * shareUrl : http://nx.facebac.com/H5/vLive.html?liveId=169956480122945153
          * shiftTime : 1970-01-01 08:00:00
-         * slaveLiveInfo : {"m3u8Url":"http://testhls.facebac.com/live/b78c603c23d5b60ef213/playlist.m3u8?token=22fd832373133c8d64ff&secret=32de807e282e8d1728d05817a0890906&ckey=f4a05ce01b8410f2464f2044e632e56c&xstToken=cf1dddb5","m3u8Url480":"","m3u8Url720":"","playUrl":"rtmp://testdown.facebac.com/live/b78c603c23d5b60ef213?token=22fd832373133c8d64ff&secret=32de807e282e8d1728d05817a0890906&ckey=f4a05ce01b8410f2464f2044e632e56c&xstToken=cf1dddb5","playUrl480":"","playUrl720":"","pushUrl":"rtmp://testpush.facebac.com/live/b78c603c23d5b60ef213?token=22fd832373133c8d64ff&secret=32de807e282e8d1728d05817a0890906&push_code=cf1dddb5&ckey=f4a05ce01b8410f2464f2044e632e56c","liveAfter":""}
+         * slaveLiveInfo : {"m3u8Url":"http://testhls.facebac.com/live/b78c603c23d5b60ef213/playlist.m3u8?token=22fd832373133c8d64ff&secret=32de807e282e8d1728d05817a0890906&ckey=f4a05ce01b8410f2464f2044e632e56c&xstToken=cf1dddb5","m3u8Url480":"","m3u8Url720":"","playUrl":"rtmp://testdown.facebac.com/live/b78c603c23d5b60ef213?token=22fd832373133c8d64ff&secret=32de807e282e8d1728d05817a0890906&ckey=f4a05ce01b8410f2464f2044e632e56c&xstToken=cf1dddb5","playUrl480":"","playUrl720":"","pushUrl":"rtmp://testpush.facebac.com/live/b78c603c23d5b60ef213?token=22fd832373133c8d64ff&secret=32de807e282e8d1728d05817a0890906&push_code=cf1dddb5&ckey=f4a05ce01b8410f2464f2044e632e56c","liveAfterUrl":""}
          * slavePushUrl :
          * thumbsUp : 0
          * totalViews : 0
@@ -91,6 +93,7 @@ public class LiveDetail implements Serializable {
         private int isrecord;
         private int istranscode;
         private String liveAfter;
+        private String liveAfterUrl;
         private int liveAfterType;
         private String liveCover;
         private String liveName;
@@ -203,6 +206,14 @@ public class LiveDetail implements Serializable {
 
         public void setLiveAfter(String liveAfter) {
             this.liveAfter = liveAfter;
+        }
+
+        public String getLiveAfterUrl() {
+            return liveAfterUrl;
+        }
+
+        public void setLiveAfterUrl(String liveAfterUrl) {
+            this.liveAfterUrl = liveAfterUrl;
         }
 
         public int getLiveAfterType() {
@@ -414,7 +425,7 @@ public class LiveDetail implements Serializable {
              * playUrl480 :
              * playUrl720 :
              * pushUrl : rtmp://testpush.facebac.com/live/b78c603c23d5b60ef213?token=22fd832373133c8d64ff&secret=32de807e282e8d1728d05817a0890906&push_code=cf1dddb5&ckey=f4a05ce01b8410f2464f2044e632e56c
-             * liveAfter :
+             * liveAfterUrl :
              */
 
             private String m3u8Url;
@@ -424,7 +435,7 @@ public class LiveDetail implements Serializable {
             private String playUrl480;
             private String playUrl720;
             private String pushUrl;
-            private String liveAfter;
+            private String liveAfterUrl;
 
             public String getM3u8Url() {
                 return m3u8Url;
@@ -482,12 +493,12 @@ public class LiveDetail implements Serializable {
                 this.pushUrl = pushUrl;
             }
 
-            public String getLiveAfter() {
-                return liveAfter;
+            public String getLiveAfterUrl() {
+                return liveAfterUrl;
             }
 
-            public void setLiveAfter(String liveAfter) {
-                this.liveAfter = liveAfter;
+            public void setLiveAfterUrl(String liveAfterUrl) {
+                this.liveAfterUrl = liveAfterUrl;
             }
         }
     }

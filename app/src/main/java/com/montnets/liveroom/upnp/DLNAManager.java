@@ -52,11 +52,10 @@ public class DLNAManager {
     };
 
     /**
-     * 查找upnp设备
+     * 鏌ユ壘upnp璁惧
      */
     public void searchDevices() {
         if (upnpBiz != null) {
-            // 清空list中数据
             upnpBiz.removeAllRemoteDevices();
             upnpBiz.search();
         }

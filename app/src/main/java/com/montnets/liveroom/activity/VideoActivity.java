@@ -14,7 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -32,6 +31,7 @@ import com.montnets.liveroom.bean.VideoDetail;
 import com.montnets.liveroom.fragment.FullScreenFragment;
 import com.montnets.liveroom.fragment.IMFragment;
 import com.montnets.liveroom.fragment.IntroductionFragment;
+import com.montnets.liveroom.im.IMManager;
 import com.montnets.liveroom.listener.OnHideKeyboardListener;
 import com.montnets.liveroom.upnp.DLNAManager;
 import com.montnets.liveroom.utils.AudioFocusManager;
@@ -40,7 +40,6 @@ import com.montnets.liveroom.utils.OrientationManager;
 import com.montnets.liveroom.view.DialogFactory;
 import com.montnets.liveroom.view.LockableScrollView;
 import com.montnets.liveroom.view.PlayerView;
-import com.montnets.mwlive.LiveRoom;
 import com.montnets.mwlive.net.NetBusiness;
 import com.montnets.mwlive.net.OkRespCallBack;
 
@@ -57,8 +56,7 @@ public class VideoActivity extends AppCompatActivity {
     private ImageView ivPreView;
     private RelativeLayout rlHeader;
     private ImageView ivBack;
-    private Button btTransTv;
-    private FullScreenFragment fullScreenFragment;
+    private ImageView ivTransTv;           //投屏
     private Dialog dialog;
 
     private int orientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
@@ -71,6 +69,7 @@ public class VideoActivity extends AppCompatActivity {
     private boolean isAdd;
 
     private IMFragment imFragment;
+    private FullScreenFragment fullScreenFragment;
     private ArrayList<String> rateList;
     private HashMap<String, String> rateMainMap;
     private HashMap<String, String> rateAuxMap;
@@ -112,7 +111,7 @@ public class VideoActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         audioFocusManager.releaseTheAudioFocus();
-        LiveRoom.getInstance().logoutRoom();
+        IMManager.getInstance().logout();
         playerMain.stopPlay();
         playerAuxiliary.stopPlay();
         imFragment = null;
@@ -165,7 +164,12 @@ public class VideoActivity extends AppCompatActivity {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        DisplayUtil.hideInputWhenTouchOtherView(this, ev, imFragment.getExcludeView(),
+        List<View> excludeViews = new ArrayList<>();
+        if (fullScreenFragment != null) {
+            excludeViews.addAll(fullScreenFragment.getExcludeView());
+        }
+        excludeViews.addAll(imFragment.getExcludeView());
+        DisplayUtil.hideInputWhenTouchOtherView(this, ev, excludeViews,
                 new OnHideKeyboardListener() {
                     @Override
                     public void onHideKeyboard() {
@@ -193,6 +197,13 @@ public class VideoActivity extends AppCompatActivity {
         playerMain = (PlayerView) findViewById(R.id.player_view_main);
         playerAuxiliary = (PlayerView) findViewById(R.id.player_view_auxiliary);
 
+        if (type == VideoConstants.TYPE_LIVE) {
+            playerMain.enableShowHeader(false);
+            playerAuxiliary.enableShowHeader(false);
+        } else if (type == VideoConstants.TYPE_VIDEO) {
+            playerMain.enableShowHeader(true);
+            playerAuxiliary.enableShowHeader(true);
+        }
         ivPreView = (ImageView) findViewById(R.id.iv_preview);
         SlidingTabLayout tabLayout = (SlidingTabLayout) findViewById(R.id.tab_indicator);
         ViewPager viewPager = (ViewPager) findViewById(R.id.vp_container);
@@ -200,7 +211,7 @@ public class VideoActivity extends AppCompatActivity {
         scrollView.setScrollingEnabled(false);
         rlHeader = (RelativeLayout) findViewById(R.id.rl_header);
         ivBack = (ImageView) findViewById(R.id.iv_back);
-        btTransTv = (Button) findViewById(R.id.bt_trans_tv);
+        ivTransTv = (ImageView) findViewById(R.id.iv_trans_tv);
 
         rateList = new ArrayList<>();
         rateMainMap = new HashMap<>();
@@ -277,7 +288,7 @@ public class VideoActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-        btTransTv.setOnClickListener(new View.OnClickListener() {
+        ivTransTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final List<Device> devices = manager.getDevices();
@@ -311,6 +322,7 @@ public class VideoActivity extends AppCompatActivity {
 
     private void showHeaderViews() {
         rlHeader.setVisibility(View.VISIBLE);
+        ivTransTv.setVisibility(View.VISIBLE);
         if (orientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE ||
                 orientation == ActivityInfo.SCREEN_ORIENTATION_USER) {
             fullScreenFragment.showViews(true);
@@ -319,6 +331,7 @@ public class VideoActivity extends AppCompatActivity {
 
     private void hideHeaderViews() {
         rlHeader.setVisibility(View.GONE);
+        ivTransTv.setVisibility(View.GONE);
         if (orientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE ||
                 orientation == ActivityInfo.SCREEN_ORIENTATION_USER) {
             fullScreenFragment.showViews(false);
@@ -440,7 +453,7 @@ public class VideoActivity extends AppCompatActivity {
                                     .into(ivPreView);
                             playerMain.setVisibility(View.INVISIBLE);
                             playerAuxiliary.setVisibility(View.INVISIBLE);
-                            btTransTv.setVisibility(View.INVISIBLE);
+                            ivTransTv.setVisibility(View.INVISIBLE);
                             break;
                         case 1: //直播中
                             handleLiving(entity);
@@ -521,7 +534,7 @@ public class VideoActivity extends AppCompatActivity {
         rateMainMap.clear();
 
         //设置主屏
-        String liveAfter = entity.getLiveAfter();
+        String liveAfter = entity.getLiveAfterUrl();
         rateList.add(VideoConstants.MODEL_ORIGINAL);
         rateMainMap.put(VideoConstants.MODEL_ORIGINAL, liveAfter);
         playerMain.setRateList(rateList);
@@ -529,7 +542,7 @@ public class VideoActivity extends AppCompatActivity {
         playerMain.startPlayVideo();
 
         //设置辅屏
-        String slaveLiveAfter = entity.getSlaveLiveInfo().getLiveAfter();
+        String slaveLiveAfter = entity.getSlaveLiveInfo().getLiveAfterUrl();
         if (TextUtils.isEmpty(slaveLiveAfter)) {
             playerAuxiliary.setVisibility(View.GONE);
         } else {

@@ -41,5 +41,4 @@ dependencies {
     api 'com.flyco.tablayout:FlycoTabLayout_Lib:2.1.2@aar'
     api 'com.github.ctiao:DanmakuFlameMaster:0.8.3'
     api 'com.githang:status-bar-compat:0.7'
-    //    implementation project(':mwlive')
 }

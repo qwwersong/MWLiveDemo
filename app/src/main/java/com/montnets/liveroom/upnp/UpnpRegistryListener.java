@@ -13,7 +13,6 @@ import org.fourthline.cling.registry.Registry;
  * @author hubing
  * @version 1.0.0 2015-4-29
  */
-
 public abstract class UpnpRegistryListener extends DefaultRegistryListener {
 
 	public void remoteDeviceDiscoveryStarted(Registry registry,

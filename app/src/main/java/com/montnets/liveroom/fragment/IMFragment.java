@@ -17,24 +17,21 @@ import android.widget.Toast;
 
 import com.montnets.liveroom.R;
 import com.montnets.liveroom.adapter.IMAdapter;
+import com.montnets.liveroom.im.IMException;
+import com.montnets.liveroom.im.IMManager;
+import com.montnets.liveroom.im.OnHandleMsgListener;
+import com.montnets.liveroom.im.OnIMStateListener;
+import com.montnets.liveroom.im.bean.IMGift;
+import com.montnets.liveroom.im.bean.IMMessage;
+import com.montnets.liveroom.im.bean.MsgCustomize;
+import com.montnets.liveroom.im.bean.MsgGift;
+import com.montnets.liveroom.im.bean.MsgMessage;
+import com.montnets.liveroom.im.bean.MsgNotice;
+import com.montnets.liveroom.im.bean.MsgSilence;
+import com.montnets.liveroom.im.bean.MsgStar;
+import com.montnets.liveroom.im.bean.MsgSystemTip;
 import com.montnets.liveroom.utils.InputMethodUtils;
-import com.montnets.mwlive.LiveRoom;
-import com.montnets.mwlive.socket.IMException;
-import com.montnets.mwlive.socket.OnReceivedMsgListener;
-import com.montnets.mwlive.socket.OnSocketStateListener;
-import com.montnets.mwlive.socket.bean.IMAnswer;
-import com.montnets.mwlive.socket.bean.IMGift;
-import com.montnets.mwlive.socket.bean.IMMessage;
 import com.montnets.mwlive.socket.bean.IMUser;
-import com.montnets.mwlive.socket.bean.MsgAnswerResult;
-import com.montnets.mwlive.socket.bean.MsgCustomize;
-import com.montnets.mwlive.socket.bean.MsgGift;
-import com.montnets.mwlive.socket.bean.MsgMessage;
-import com.montnets.mwlive.socket.bean.MsgNotice;
-import com.montnets.mwlive.socket.bean.MsgQuestionnaire;
-import com.montnets.mwlive.socket.bean.MsgSilence;
-import com.montnets.mwlive.socket.bean.MsgStar;
-import com.montnets.mwlive.socket.bean.MsgSystemTip;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,13 +46,10 @@ public class IMFragment extends Fragment {
     private Button btSendMsg;
     private Button btSendStar;
     private Button btSendGift;
-    private Button btQuestionResult;
-    private Button btSendAnswer;
     private RelativeLayout rlRoot;
     private RecyclerView lvChat;
-    private LiveRoom liveRoom;
+    private IMManager imManager;
     private String videoID;
-    private MsgQuestionnaire questionnaire;
 
     public static IMFragment getInstance(String videoID) {
         IMFragment imFragment = new IMFragment();
@@ -71,8 +65,6 @@ public class IMFragment extends Fragment {
         btSendMsg = (Button) rootView.findViewById(R.id.bt_send_msg);
         btSendStar = (Button) rootView.findViewById(R.id.bt_send_star);
         btSendGift = (Button) rootView.findViewById(R.id.bt_send_gift);
-        btQuestionResult = (Button) rootView.findViewById(R.id.bt_question_result);
-        btSendAnswer = (Button) rootView.findViewById(R.id.bt_send_answer);
         rlRoot = (RelativeLayout) rootView.findViewById(R.id.rl_im_root);
 
         lvChat = (RecyclerView) rootView.findViewById(R.id.lv_chat);
@@ -90,9 +82,10 @@ public class IMFragment extends Fragment {
 
     private void initLiveRoom() {
         IMUser imUser = new IMUser("", "游客", "");
-        liveRoom = LiveRoom.getInstance();
+        imManager = IMManager.getInstance();
         if (!TextUtils.isEmpty(videoID)) {
-            liveRoom.loginRoom(videoID, imUser, onSocketStateListener, onReceivedMsgListener);
+            imManager.login(videoID, imUser, onIMStateListener);
+            imManager.registerOnHandleMsgListener(onHandleMsgListener);
         } else {
             Toast.makeText(getActivity(), "未获取到视频ID", Toast.LENGTH_LONG).show();
         }
@@ -104,7 +97,7 @@ public class IMFragment extends Fragment {
             public void onClick(View view) {
                 String msg = etMsg.getText().toString().trim();
                 if (!TextUtils.isEmpty(msg)) {
-                    liveRoom.sendMessage(new IMMessage(msg));
+                    imManager.sendMessage(new IMMessage(msg));
                     etMsg.setText("");
                     InputMethodUtils.hideSoftwareKeyboard(getActivity(), etMsg);
                 } else {
@@ -116,70 +109,15 @@ public class IMFragment extends Fragment {
         btSendStar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                liveRoom.sendStar();
+
+                imManager.sendStar();
             }
         });
 
         btSendGift.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                liveRoom.sendGift(new IMGift("糖", 1, "11", ""));
-            }
-        });
-
-        btQuestionResult.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (questionnaire == null) {
-                    Toast.makeText(getActivity(), "没有收到问卷", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                liveRoom.sendQuestionResult(questionnaire.data.id);
-            }
-        });
-
-        btSendAnswer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (questionnaire == null) {
-                    Toast.makeText(getActivity(), "没有收到问卷", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                List<IMAnswer.Answer> answers = new ArrayList<>();
-                IMAnswer imAnswer = new IMAnswer();
-                imAnswer.questionnaireId = questionnaire.data.id;
-                imAnswer.questionnaireTitle = questionnaire.data.questionnaire.title;
-                imAnswer.type = questionnaire.data.questionnaire.type;
-                imAnswer.userName = "游客";
-                imAnswer.userId = "";
-                imAnswer.answer = answers;
-
-                List<MsgQuestionnaire.DataBean.Questionnaire.Topic> topics = questionnaire.data.questionnaire.topic;
-                for (MsgQuestionnaire.DataBean.Questionnaire.Topic topic : topics) {
-                    IMAnswer.Answer answer = new IMAnswer.Answer();
-                    answer.topicId = topic._id;
-                    answer.number = topic.number;
-                    answer.question = topic.question;
-
-                    List<String> options = new ArrayList<>();
-                    List<String> optionIds = new ArrayList<>();
-                    for (MsgQuestionnaire.DataBean.Questionnaire.Topic.Option contents : topic.options) {
-                        options.add(contents.content);
-                        optionIds.add(contents._id);
-                    }
-
-                    if (questionnaire.data.questionnaire.type.equals("single")) {
-                        answer.selectId = topic.options.get(0)._id;
-                        answer.selectContent = topic.options.get(0).content;
-                    } else if (questionnaire.data.questionnaire.type.equals("multiple")) {
-                        answer.selectMultipleId = optionIds;
-                        answer.selectMultipleContent = options;
-                    }
-                    answer.optionSort = options;
-                    answers.add(answer);
-                }
-
-                liveRoom.sendAnswer(imAnswer);
+                imManager.sendGift(new IMGift("糖", 1, "11", ""));
             }
         });
 
@@ -191,7 +129,7 @@ public class IMFragment extends Fragment {
         });
     }
 
-    OnReceivedMsgListener onReceivedMsgListener = new OnReceivedMsgListener() {
+    private OnHandleMsgListener onHandleMsgListener = new OnHandleMsgListener() {
         @Override
         public void onReceivedMessage(MsgMessage message) {
             String msg = message.data.msgbody;
@@ -232,20 +170,9 @@ public class IMFragment extends Fragment {
         public void onReceivedSilence(MsgSilence silence) {
 
         }
-
-        @Override
-        public void onReceivedQuestion(MsgQuestionnaire msgQuestionnaire) {
-            questionnaire = msgQuestionnaire;
-        }
-
-        @Override
-        public void onReceivedAnswerResult(MsgAnswerResult answerResult) {
-
-        }
-
     };
 
-    OnSocketStateListener onSocketStateListener = new OnSocketStateListener() {
+    OnIMStateListener onIMStateListener = new OnIMStateListener() {
         @Override
         public void onSuccess() {
             imAdapter.addItem("聊天室登录成功");

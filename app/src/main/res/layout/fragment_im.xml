@@ -59,18 +59,6 @@
             android:layout_height="wrap_content"
             android:text="礼物"/>
 
-        <Button
-            android:id="@+id/bt_question_result"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="问卷结果"/>
-
-        <Button
-            android:id="@+id/bt_send_answer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="提交答案"/>
-
     </LinearLayout>
 
 </RelativeLayout>
