@@ -7,6 +7,7 @@ import android.widget.RelativeLayout;
 import com.montnets.mwlive.base.ScreenUtil;
 
 /**
+ * 播放器宽高布局控制类
  * Created by songlei on 2018/12/07.
  */
 public class PlayerLayoutManager {
@@ -19,7 +20,7 @@ public class PlayerLayoutManager {
 
     public PlayerLayoutManager(Context context){
         int width_big = ScreenUtil.getScreenWidth(context);
-        int height_big = width_big * 9 / 16;
+        int height_big = width_big * 9 / 16; //宽高比16:9
         layoutParamsBig = new RelativeLayout.LayoutParams(width_big, height_big);
 
         int width_small = ScreenUtil.dip2px(context, 200);

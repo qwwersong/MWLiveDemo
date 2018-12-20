@@ -542,6 +542,9 @@ public class VideoActivity extends AppCompatActivity {
         playerMain.startPlayVideo();
 
         //设置辅屏
+        if (entity.getSlaveLiveInfo() == null) {
+            return;
+        }
         String slaveLiveAfter = entity.getSlaveLiveInfo().getLiveAfterUrl();
         if (TextUtils.isEmpty(slaveLiveAfter)) {
             playerAuxiliary.setVisibility(View.GONE);

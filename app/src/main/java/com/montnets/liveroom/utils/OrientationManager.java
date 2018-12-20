@@ -10,6 +10,7 @@ import android.provider.Settings;
 import android.view.OrientationEventListener;
 
 /**
+ * 注册屏幕旋转广播，用于锁屏
  * Created by songlei on 2018/08/03.
  */
 public class OrientationManager {
