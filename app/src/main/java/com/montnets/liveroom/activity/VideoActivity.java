@@ -410,6 +410,8 @@ public class VideoActivity extends AppCompatActivity {
     private void handleVideo(VideoDetail.ObjEntity entity) {
         playerMain.initConfig(PlayerView.TYPE_VIDEO);
         playerAuxiliary.initConfig(PlayerView.TYPE_VIDEO);
+        playerMain.enableShowHeader(true);
+        playerAuxiliary.enableShowHeader(true);
 
         String videoUrl480 = entity.getVideoSource().getPlayUrl480();
         String videoUrl720 = entity.getVideoSource().getPlayUrl720();
@@ -479,6 +481,8 @@ public class VideoActivity extends AppCompatActivity {
     private void handleLiving(LiveDetail.ObjBean entity) {
         playerMain.initConfig(PlayerView.TYPE_LIVE);
         playerAuxiliary.initConfig(PlayerView.TYPE_LIVE);
+        playerMain.enableShowHeader(false);
+        playerAuxiliary.enableShowHeader(false);
 
         //================= 主屏播放地址 ===================
         liveUrl = entity.getPlayUrl();
@@ -530,6 +534,8 @@ public class VideoActivity extends AppCompatActivity {
     private void handleLiveEnd(LiveDetail.ObjBean entity) {
         playerMain.initConfig(PlayerView.TYPE_VIDEO);
         playerAuxiliary.initConfig(PlayerView.TYPE_VIDEO);
+        playerMain.enableShowHeader(true);
+        playerAuxiliary.enableShowHeader(true);
         rateList.clear();
         rateMainMap.clear();
 
