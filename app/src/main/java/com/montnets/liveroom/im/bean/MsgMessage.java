@@ -14,7 +14,7 @@ public class MsgMessage implements Serializable {
     public String user_id;      //用户ID 必填
     public String msg_id;       //消息ID
     public long send_time;      //消息发送时间戳   eg: 1533174925108
-    public String room_id;         //消息所属房间号
+    public String room_id;      //消息所属房间号
     public int silence;         //发送消息用户是否被禁言   1-是 0-否
     public String sender_head;  //消息原始发送者头像
     public DataBean data;

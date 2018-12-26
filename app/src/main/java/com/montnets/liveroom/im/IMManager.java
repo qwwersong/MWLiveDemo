@@ -14,12 +14,13 @@ import com.montnets.liveroom.im.bean.MsgJoinRoom;
 import com.montnets.liveroom.im.bean.MsgLeaveRoom;
 import com.montnets.liveroom.im.bean.MsgMessage;
 import com.montnets.liveroom.im.bean.MsgNotice;
+import com.montnets.liveroom.im.bean.MsgQuestion;
 import com.montnets.liveroom.im.bean.MsgSilence;
 import com.montnets.liveroom.im.bean.MsgStar;
 import com.montnets.liveroom.im.bean.MsgSystemTip;
 import com.montnets.liveroom.im.bean.MsgVideoState;
-import com.montnets.mwlive.base.GsonUtil;
 import com.montnets.mwlive.LiveRoom;
+import com.montnets.mwlive.base.GsonUtil;
 import com.montnets.mwlive.net.NetBusiness;
 import com.montnets.mwlive.net.OkRespCallBack;
 import com.montnets.mwlive.socket.OnReceivedMsgListener;
@@ -83,6 +84,12 @@ public class IMManager {
             int cmd = mReceivedData.getInt(SocketConstants.CMD);
             String data = mReceivedData.toString();
             switch (cmd) {
+                case SocketConstants.CMD_ROOM_ENTER:
+                    MsgJoinRoom msgJoinRoom = gson.fromJson(data, MsgJoinRoom.class);
+                    break;
+                case SocketConstants.CMD_ROOM_EXIT:
+                    MsgLeaveRoom msgLeaveRoom = gson.fromJson(data, MsgLeaveRoom.class);
+                    break;
                 case IMConstants.CMD_MSG_SYSTEM_TIP:
                     MsgSystemTip msgSystemTip = gson.fromJson(data, MsgSystemTip.class);
                     if (handleMsgListeners != null && handleMsgListeners.size() > 0) {
@@ -90,12 +97,6 @@ public class IMManager {
                             handleMsgListeners.get(i).onReceivedSysTip(msgSystemTip);
                         }
                     }
-                    break;
-                case SocketConstants.CMD_ROOM_ENTER:
-                    MsgJoinRoom msgJoinRoom = gson.fromJson(data, MsgJoinRoom.class);
-                    break;
-                case SocketConstants.CMD_ROOM_EXIT:
-                    MsgLeaveRoom msgLeaveRoom = gson.fromJson(data, MsgLeaveRoom.class);
                     break;
                 case IMConstants.CMD_MSG_TXT:
                     MsgMessage msgMessage = gson.fromJson(data, MsgMessage.class);
@@ -137,11 +138,11 @@ public class IMManager {
                         }
                     }
                     break;
-                case IMConstants.CMD_MSG_VIDEO_STATE:
-                    MsgVideoState mMsgVideoState = gson.fromJson(data, MsgVideoState.class);
-                    if (playerListeners != null && playerListeners.size() > 0) {
-                        for (int i = 0; i < playerListeners.size(); i++) {
-                            playerListeners.get(i).onPlayerState(mMsgVideoState);
+                case IMConstants.CMD_MSG_QUESTION_RECEIVED:
+                    MsgQuestion msgQuestion = gson.fromJson(data, MsgQuestion.class);
+                    if (handleMsgListeners != null && handleMsgListeners.size() > 0) {
+                        for (int i = 0; i < handleMsgListeners.size(); i++) {
+                            handleMsgListeners.get(i).onReceivedQuestion(msgQuestion);
                         }
                     }
                     break;
@@ -158,7 +159,13 @@ public class IMManager {
                         }
                     }
                     break;
-                case IMConstants.CMD_MSG_QUESTION_RECEIVED:
+                case IMConstants.CMD_MSG_VIDEO_STATE:
+                    MsgVideoState mMsgVideoState = gson.fromJson(data, MsgVideoState.class);
+                    if (playerListeners != null && playerListeners.size() > 0) {
+                        for (int i = 0; i < playerListeners.size(); i++) {
+                            playerListeners.get(i).onPlayerState(mMsgVideoState);
+                        }
+                    }
                     break;
             }
         } catch (JsonSyntaxException e) {
@@ -208,18 +215,39 @@ public class IMManager {
         }
     }
 
+    /**
+     * 发送聊天消息
+     * @param msg IMessage类型
+     *            属性：String类型的msgbody
+     */
     public void sendMessage(IMMessage msg){
         sendMsgByCMD(IMConstants.CMD_MSG_TXT, msg);
     }
 
+    /**
+     * 发送礼物
+     * @param msg IMGift类型
+     *            属性：giftName 礼物名称
+     *                  giftNum  礼物数量
+     *                  giftID   礼物ID
+     *                  giftImg  礼物图片
+     */
     public void sendGift(IMGift msg){
         sendMsgByCMD(IMConstants.CMD_MSG_GIFT, msg);
     }
 
+    /**
+     * 发送点赞
+     */
     public void sendStar(){
         sendMsgByCMD(IMConstants.CMD_MSG_STAR, null);
     }
 
+    /**
+     * 发送自定义消息
+     * @param msg IMessage类型
+     *            属性：String类型的msgbody
+     */
     public void sendCustomize(IMMessage msg){
         sendMsgByCMD(IMConstants.CMD_MSG_CUSTOMIZE, msg);
     }

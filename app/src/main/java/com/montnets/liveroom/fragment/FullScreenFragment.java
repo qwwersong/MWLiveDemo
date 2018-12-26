@@ -24,6 +24,7 @@ import com.montnets.liveroom.im.bean.MsgCustomize;
 import com.montnets.liveroom.im.bean.MsgGift;
 import com.montnets.liveroom.im.bean.MsgMessage;
 import com.montnets.liveroom.im.bean.MsgNotice;
+import com.montnets.liveroom.im.bean.MsgQuestion;
 import com.montnets.liveroom.im.bean.MsgSilence;
 import com.montnets.liveroom.im.bean.MsgStar;
 import com.montnets.liveroom.im.bean.MsgSystemTip;
@@ -197,6 +198,11 @@ public class FullScreenFragment extends Fragment {
 
         @Override
         public void onReceivedSilence(MsgSilence silence) {
+
+        }
+
+        @Override
+        public void onReceivedQuestion(MsgQuestion question) {
 
         }
     };

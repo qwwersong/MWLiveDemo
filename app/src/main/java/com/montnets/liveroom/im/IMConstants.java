@@ -22,7 +22,7 @@ public class IMConstants {
     public static final int CMD_MSG_REMOVE_SINGLE = 2022;       //清除单条聊天记录
     public static final int CMD_MSG_SILENCE_ALL = 2024;         //全体禁言请求
 
-    public static final int CMD_MSG_QUESTION_RECEIVED = 2121;   //收到后台发送的问卷
+    public static final int CMD_MSG_QUESTION_RECEIVED = 2120;   //收到后台发送的问卷
 
     public static final int CMD_NOTIFICATION = 5001;            //公告栏通知消息
 }
