@@ -526,6 +526,7 @@ public class VideoActivity extends AppCompatActivity {
             playerAuxiliary.setRateList(rateList);
             playerAuxiliary.setRateMap(rateAuxMap);
             if (!TextUtils.isEmpty(slaveUrl)) {
+                playerAuxiliary.setVisibility(View.VISIBLE);
                 playerAuxiliary.startPlayLive();
             }
         }

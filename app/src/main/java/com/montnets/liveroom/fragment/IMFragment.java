@@ -1,5 +1,6 @@
 package com.montnets.liveroom.fragment;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -32,6 +33,7 @@ import com.montnets.liveroom.im.bean.MsgSilence;
 import com.montnets.liveroom.im.bean.MsgStar;
 import com.montnets.liveroom.im.bean.MsgSystemTip;
 import com.montnets.liveroom.utils.InputMethodUtils;
+import com.montnets.liveroom.view.DialogFactory;
 import com.montnets.mwlive.socket.bean.IMUser;
 
 import java.util.ArrayList;
@@ -110,7 +112,6 @@ public class IMFragment extends Fragment {
         btSendStar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 imManager.sendStar();
             }
         });
@@ -174,7 +175,11 @@ public class IMFragment extends Fragment {
 
         @Override
         public void onReceivedQuestion(MsgQuestion question) {
-
+            if (question.data.status == 1) {
+                String url = question.data.url;
+                Dialog dialog = DialogFactory.createDialog(getActivity(), url);
+                dialog.show();
+            }
         }
     };
 
