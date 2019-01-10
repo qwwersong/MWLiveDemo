@@ -284,21 +284,6 @@ public class PlayerView extends RelativeLayout implements CommonHandler.HandlerC
     }
 
     //==================================播放控制=================================
-    public int getPlayState(){
-        return playState;
-    }
-
-    public void startPlayLive(String url) {
-        playerView.startPlay(url);
-    }
-
-    public void startPlayVideo(String url) {
-        videoUrl = url;
-        mediaController.startPlay();
-        if (isMain) {
-            mediaController.setVisibility(View.VISIBLE);
-        }
-    }
 
     public void startPlayLive() {
         String model = rateList.get(0);

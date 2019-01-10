@@ -48,6 +48,15 @@
             android:windowSoftInputMode="stateHidden|adjustResize"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:configChanges="orientation|keyboardHidden|screenSize">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data
+                    android:host="liveroom.montnets.com"
+                    android:scheme="nxmw" />
+            </intent-filter>
         </activity>
         <service android:name=".upnp.service.UpnpDeviceService" >
         </service>

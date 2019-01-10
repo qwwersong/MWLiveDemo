@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -94,8 +95,8 @@ public class VideoActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        playerMain.reset();
-        playerAuxiliary.reset();
+//        playerMain.reset();
+//        playerAuxiliary.reset();
         playerMain.resumePlay();
         playerAuxiliary.resumePlay();
     }
@@ -185,11 +186,17 @@ public class VideoActivity extends AppCompatActivity {
         audioFocusManager = new AudioFocusManager();
         audioFocusManager.requestTheAudioFocus();
         Intent intent = getIntent();
-        type = intent.getIntExtra(VideoConstants.TYPE, -1);
-        if (type == VideoConstants.TYPE_LIVE) {
-            videoID = intent.getStringExtra(VideoConstants.VIDEO_ID);
-        } else if (type == VideoConstants.TYPE_VIDEO) {
-            videoID = intent.getStringExtra(VideoConstants.VIDEO_ID);
+        Uri uri = intent.getData();
+        if (uri != null) {  //H5跳转APP
+            type = Integer.valueOf(uri.getQueryParameter("status"));
+            videoID = uri.getQueryParameter("ID");
+        } else {
+            type = intent.getIntExtra(VideoConstants.TYPE, -1);
+            if (type == VideoConstants.TYPE_LIVE) {
+                videoID = intent.getStringExtra(VideoConstants.VIDEO_ID);
+            } else if (type == VideoConstants.TYPE_VIDEO) {
+                videoID = intent.getStringExtra(VideoConstants.VIDEO_ID);
+            }
         }
     }
 
