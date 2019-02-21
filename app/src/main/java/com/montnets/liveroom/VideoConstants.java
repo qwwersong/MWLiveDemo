@@ -3,6 +3,7 @@ package com.montnets.liveroom;
 public class VideoConstants {
     public static final int TYPE_LIVE = 1;
     public static final int TYPE_VIDEO = 2;
+    public static final int TYPE_LIVE_RECORD = 3;
 
     public static final int STATE_PREVIEW = 0;      //预告
     public static final int STATE_PLAYING = 1;      //正在直播

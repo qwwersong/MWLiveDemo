@@ -59,6 +59,8 @@ public class VideoActivity extends AppCompatActivity {
     private ImageView ivBack;
     private ImageView ivTransTv;           //投屏
     private Dialog dialog;
+    private ViewPager viewPager;
+    private SlidingTabLayout tabLayout;
 
     private int orientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
     private int tag = 0;        //是否点击切换大小屏
@@ -95,8 +97,6 @@ public class VideoActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-//        playerMain.reset();
-//        playerAuxiliary.reset();
         playerMain.resumePlay();
         playerAuxiliary.resumePlay();
     }
@@ -212,8 +212,8 @@ public class VideoActivity extends AppCompatActivity {
             playerAuxiliary.enableShowHeader(true);
         }
         ivPreView = (ImageView) findViewById(R.id.iv_preview);
-        SlidingTabLayout tabLayout = (SlidingTabLayout) findViewById(R.id.tab_indicator);
-        ViewPager viewPager = (ViewPager) findViewById(R.id.vp_container);
+        tabLayout = (SlidingTabLayout) findViewById(R.id.tab_indicator);
+        viewPager = (ViewPager) findViewById(R.id.vp_container);
         LockableScrollView scrollView = (LockableScrollView) findViewById(R.id.lsv_player_root);
         scrollView.setScrollingEnabled(false);
         rlHeader = (RelativeLayout) findViewById(R.id.rl_header);
@@ -223,9 +223,11 @@ public class VideoActivity extends AppCompatActivity {
         rateList = new ArrayList<>();
         rateMainMap = new HashMap<>();
         rateAuxMap = new HashMap<>();
+    }
 
+    private void initFragment(){
         List<Fragment> fragments = new ArrayList<>();
-        imFragment = IMFragment.getInstance(videoID);
+        imFragment = IMFragment.getInstance(videoID, type);
         IntroductionFragment introductionFragment = IntroductionFragment.getInstance();
         fragments.add(imFragment);
         fragments.add(introductionFragment);
@@ -415,6 +417,8 @@ public class VideoActivity extends AppCompatActivity {
     }
 
     private void handleVideo(VideoDetail.ObjEntity entity) {
+        initFragment();
+
         playerMain.initConfig(PlayerView.TYPE_VIDEO);
         playerAuxiliary.initConfig(PlayerView.TYPE_VIDEO);
         playerMain.enableShowHeader(true);
@@ -486,6 +490,8 @@ public class VideoActivity extends AppCompatActivity {
     }
 
     private void handleLiving(LiveDetail.ObjBean entity) {
+        initFragment();
+
         playerMain.initConfig(PlayerView.TYPE_LIVE);
         playerAuxiliary.initConfig(PlayerView.TYPE_LIVE);
         playerMain.enableShowHeader(false);
@@ -540,6 +546,9 @@ public class VideoActivity extends AppCompatActivity {
     }
 
     private void handleLiveEnd(LiveDetail.ObjBean entity) {
+        type = VideoConstants.TYPE_LIVE_RECORD;
+        initFragment();
+
         playerMain.initConfig(PlayerView.TYPE_VIDEO);
         playerAuxiliary.initConfig(PlayerView.TYPE_VIDEO);
         playerMain.enableShowHeader(true);

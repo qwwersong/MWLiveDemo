@@ -69,10 +69,10 @@ public class IMManager {
         handleMsgListeners = new ArrayList<>();
     }
 
-    public void login(String videoID, IMUser user, OnIMStateListener onIMStateListener){
+    public void login(String videoID, String type, IMUser user, OnIMStateListener onIMStateListener){
         this.user = user;
         this.onIMStateListener = onIMStateListener;
-        fetchRoomID(videoID);
+        fetchRoomID(videoID, type);
     }
 
     public void logout(){
@@ -288,10 +288,11 @@ public class IMManager {
      *
      * @param videoID 直播ID / 短视频ID
      */
-    private void fetchRoomID(String videoID) {
+    private void fetchRoomID(String videoID, String type) {
         Map<String, String> map = new HashMap<>();
         map.put("cmd", "lb");
         map.put("liveID", videoID);
+        map.put("type", type);
         NetBusiness.getInstance().okhttpPost(RequestConstants.IM_URL, map, new OkRespCallBack<IMRoom>(IMRoom.class) {
 
             @Override

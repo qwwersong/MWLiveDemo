@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.montnets.liveroom.R;
+import com.montnets.liveroom.VideoConstants;
 import com.montnets.liveroom.adapter.IMAdapter;
 import com.montnets.liveroom.im.IMException;
 import com.montnets.liveroom.im.IMManager;
@@ -53,10 +54,12 @@ public class IMFragment extends Fragment {
     private RecyclerView lvChat;
     private IMManager imManager;
     private String videoID;
+    private int type;
 
-    public static IMFragment getInstance(String videoID) {
+    public static IMFragment getInstance(String videoID, int type) {
         IMFragment imFragment = new IMFragment();
         imFragment.videoID = videoID;
+        imFragment.type = type;
         return imFragment;
     }
 
@@ -87,7 +90,13 @@ public class IMFragment extends Fragment {
         IMUser imUser = new IMUser("", "游客", "");
         imManager = IMManager.getInstance();
         if (!TextUtils.isEmpty(videoID)) {
-            imManager.login(videoID, imUser, onIMStateListener);
+            String videoType = null;
+            if (type == VideoConstants.TYPE_LIVE) {
+                videoType = "0";
+            } else if (type == VideoConstants.TYPE_VIDEO) {
+                videoType = "2";
+            }
+            imManager.login(videoID, videoType, imUser, onIMStateListener);
             imManager.registerOnHandleMsgListener(onHandleMsgListener);
         } else {
             Toast.makeText(getActivity(), "未获取到视频ID", Toast.LENGTH_LONG).show();
