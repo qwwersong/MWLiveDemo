@@ -10,14 +10,14 @@
 
     <style name="title_choose_dialog">
         <item name="android:windowFrame">@null</item>
-        <!-- ±ß¿ò -->
+        <!-- è¾¹æ¡† -->
         <item name="android:windowIsFloating">true</item>
-        <!-- ÊÇ·ñ¸¡ÏÖÔÚactivityÖ®ÉÏ -->
+        <!-- æ˜¯å¦æµ®ç°åœ¨activityä¹‹ä¸Š -->
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@drawable/transparent_bg</item>
-        <!-- ×Ô¼ºÏëÒªµÄ±³¾° -->
+        <!-- è‡ªå·±æƒ³è¦çš„èƒŒæ™¯ -->
         <item name="android:windowNoTitle">true</item>
-        <!-- ³ıÈ¥title -->
+        <!-- é™¤å»title -->
     </style>
 
     <style name="main_menu_animstyle">
