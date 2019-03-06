@@ -49,7 +49,6 @@ public class MyMediaController extends LinearLayout {
                     if (currentTime > 0) {
                         tv_currentTime.setText(formatTime(currentTime));
                         seekBar.setProgress(currentTime);
-//                        LogUtil.e("pp", "currentTime = " + currentTime + " totalTime = " + totalTime);
                         if (currentTime == totalTime) {
                             stopProgress();
                         }
@@ -173,7 +172,7 @@ public class MyMediaController extends LinearLayout {
     public void stopProgress() {
         isPlayed = false;
         togglePlay.setChecked(false);
-        onMediaControllerListener.stopPlay();
+//        onMediaControllerListener.stopPlay();
         seekBar.setProgress(0);
         tv_currentTime.setText("00:00");
         stopTimer();

@@ -246,6 +246,9 @@ public class PlayerView extends RelativeLayout implements CommonHandler.HandlerC
                 case PlayerConstants.STATE_FINISH:
                     playState = STATE_FINISH;
                     videoCover.showTip("播放结束");
+                    if (type == TYPE_VIDEO) {
+                        mediaController.stopProgress();
+                    }
                     break;
                 case PlayerConstants.STATE_BUFFERING:
                     if (playState != STATE_FINISH) {//这个判断原因：聊天室流状态和播放器状态在结束时可能会冲突
