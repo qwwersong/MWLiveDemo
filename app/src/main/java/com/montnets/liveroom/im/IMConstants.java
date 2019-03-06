@@ -11,6 +11,7 @@ public class IMConstants {
     public static final int CMD_MSG_TXT = 1004;                 //聊天室通用消息
     public static final int CMD_MSG_GIFT = 1005;                //送礼消息
     public static final int CMD_MSG_STAR = 1006;                //点赞消息
+    public static final int CMD_MSG_MULTI = 1009;               //聚包
     public static final int CMD_MSG_CUSTOMIZE = 1055;           //聊天室自定义消息
 
     public static final int CMD_MSG_VIDEO_STATE = 2002;         //状态通知消息

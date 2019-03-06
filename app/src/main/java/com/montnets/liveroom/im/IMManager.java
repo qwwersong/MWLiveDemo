@@ -13,6 +13,7 @@ import com.montnets.liveroom.im.bean.MsgGift;
 import com.montnets.liveroom.im.bean.MsgJoinRoom;
 import com.montnets.liveroom.im.bean.MsgLeaveRoom;
 import com.montnets.liveroom.im.bean.MsgMessage;
+import com.montnets.liveroom.im.bean.MsgMulti;
 import com.montnets.liveroom.im.bean.MsgNotice;
 import com.montnets.liveroom.im.bean.MsgQuestion;
 import com.montnets.liveroom.im.bean.MsgSilence;
@@ -120,6 +121,14 @@ public class IMManager {
                         for (int i = 0; i < handleMsgListeners.size(); i++) {
                             handleMsgListeners.get(i).onReceivedStar(msgStar);
                         }
+                    }
+                    break;
+                case IMConstants.CMD_MSG_MULTI:
+                    MsgMulti multiMsg = gson.fromJson(data, MsgMulti.class);
+                    List<Object> allsms = multiMsg.data.allsms;
+                    for (Object sms : allsms) {
+                        String json = GsonUtil.createGsonString(sms);
+                        onMsgHandle(new JSONObject(json));
                     }
                     break;
                 case IMConstants.CMD_NOTIFICATION:
