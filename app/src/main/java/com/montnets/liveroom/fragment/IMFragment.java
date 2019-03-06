@@ -90,7 +90,7 @@ public class IMFragment extends Fragment {
         IMUser imUser = new IMUser("", "游客", "");
         imManager = IMManager.getInstance();
         if (!TextUtils.isEmpty(videoID)) {
-            String videoType = null;
+            String videoType = "";
             if (type == VideoConstants.TYPE_LIVE) {
                 videoType = "0";
             } else if (type == VideoConstants.TYPE_VIDEO) {

@@ -196,8 +196,10 @@ public class PlayerView extends RelativeLayout implements CommonHandler.HandlerC
     public void initConfig(int type) {
         this.type = type;
         if (type == TYPE_LIVE) {
+            playerView.setPlayerType(PlayerConstants.PLAYER_MW);
             mediaController.setVisibility(View.GONE);
         } else {
+            playerView.setPlayerType(PlayerConstants.PLAYER_MEDIA);
             if (isMain) {
                 mediaController.setVisibility(View.VISIBLE);
             } else {
