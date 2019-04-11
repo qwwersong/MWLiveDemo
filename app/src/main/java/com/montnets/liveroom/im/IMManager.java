@@ -78,6 +78,7 @@ public class IMManager {
 
     public void logout(){
         liveRoom.logoutRoom();
+        onIMStateListener = null;
     }
 
     private void onMsgHandle(JSONObject mReceivedData) {
@@ -265,12 +266,20 @@ public class IMManager {
         playerListeners.add(onPlayerStateListener);
     }
 
+    public void unregisterPlayerListener(OnPlayerStateListener onPlayerStateListener){
+        if (onPlayerStateListener != null && playerListeners != null) {
+            playerListeners.remove(onPlayerStateListener);
+        }
+    }
+
     public void registerOnHandleMsgListener(OnHandleMsgListener onHandleMsgListener){
         handleMsgListeners.add(onHandleMsgListener);
     }
 
     public void unregister(OnHandleMsgListener onHandleMsgListener){
-        handleMsgListeners.remove(onHandleMsgListener);
+        if (onHandleMsgListener != null && handleMsgListeners != null) {
+            handleMsgListeners.remove(onHandleMsgListener);
+        }
     }
 
     private OnReceivedMsgListener onReceivedMsgListener = new OnReceivedMsgListener() {

@@ -181,16 +181,7 @@ public class PlayerView extends RelativeLayout implements CommonHandler.HandlerC
             }
         });
 
-        IMManager.getInstance().registerOnPlayerStateListener(new OnPlayerStateListener() {
-            @Override
-            public void onPlayerState(MsgVideoState msgVideoState) {
-                if (isMain) {
-                    setVideoState(msgVideoState.data.live_status);
-                } else {
-                    setVideoState(msgVideoState.data.slave_status);
-                }
-            }
-        });
+        IMManager.getInstance().registerOnPlayerStateListener(onPlayerStateListener);
     }
 
     public void initConfig(int type) {
@@ -265,6 +256,17 @@ public class PlayerView extends RelativeLayout implements CommonHandler.HandlerC
         }
     };
 
+    OnPlayerStateListener onPlayerStateListener = new OnPlayerStateListener() {
+        @Override
+        public void onPlayerState(MsgVideoState msgVideoState) {
+            if (isMain) {
+                setVideoState(msgVideoState.data.live_status);
+            } else {
+                setVideoState(msgVideoState.data.slave_status);
+            }
+        }
+    };
+
     private void setVideoState(int state) {
         switch (state) {
             case PlayerConstants.LIVE_STATUS_PREVIEW:
@@ -313,6 +315,7 @@ public class PlayerView extends RelativeLayout implements CommonHandler.HandlerC
         }
         playerView.stopPlay();
         playerView.release();
+        IMManager.getInstance().unregisterPlayerListener(onPlayerStateListener);
     }
 
     public void pausePlay() {

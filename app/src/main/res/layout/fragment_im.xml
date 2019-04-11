@@ -61,4 +61,21 @@
 
     </LinearLayout>
 
+    <!--可连续发送的小礼物-->
+    <com.montnets.liveroom.view.gift.RoomContinueGiftView
+        android:id="@+id/continue_gift_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:visibility="invisible"/>
+
+    <com.montnets.liveroom.view.gift.RoomContinueGiftView
+        android:id="@+id/continue_gift_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/continue_gift_up"
+        android:layout_marginBottom="5dp"
+        android:clickable="false"
+        android:visibility="invisible"/>
+
 </RelativeLayout>

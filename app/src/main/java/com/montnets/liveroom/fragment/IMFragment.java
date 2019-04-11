@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.montnets.liveroom.R;
 import com.montnets.liveroom.VideoConstants;
 import com.montnets.liveroom.adapter.IMAdapter;
+import com.montnets.liveroom.view.gift.GiftManager;
 import com.montnets.liveroom.im.IMException;
 import com.montnets.liveroom.im.IMManager;
 import com.montnets.liveroom.im.OnHandleMsgListener;
@@ -35,6 +36,7 @@ import com.montnets.liveroom.im.bean.MsgStar;
 import com.montnets.liveroom.im.bean.MsgSystemTip;
 import com.montnets.liveroom.utils.InputMethodUtils;
 import com.montnets.liveroom.view.DialogFactory;
+import com.montnets.liveroom.view.gift.RoomContinueGiftView;
 import com.montnets.mwlive.socket.bean.IMUser;
 
 import java.util.ArrayList;
@@ -52,7 +54,9 @@ public class IMFragment extends Fragment {
     private Button btSendGift;
     private RelativeLayout rlRoot;
     private RecyclerView lvChat;
+
     private IMManager imManager;
+    private GiftManager giftManager;
     private String videoID;
     private int type;
 
@@ -72,6 +76,8 @@ public class IMFragment extends Fragment {
         btSendStar = (Button) rootView.findViewById(R.id.bt_send_star);
         btSendGift = (Button) rootView.findViewById(R.id.bt_send_gift);
         rlRoot = (RelativeLayout) rootView.findViewById(R.id.rl_im_root);
+        RoomContinueGiftView giftUpView = (RoomContinueGiftView) rootView.findViewById(R.id.continue_gift_up);
+        RoomContinueGiftView giftDownView = (RoomContinueGiftView) rootView.findViewById(R.id.continue_gift_down);
 
         lvChat = (RecyclerView) rootView.findViewById(R.id.lv_chat);
         lvChat.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -81,13 +87,21 @@ public class IMFragment extends Fragment {
         lvChat.setAdapter(imAdapter);
         rollToEnd();
 
+        giftManager = new GiftManager(giftUpView, giftDownView);
+
         initLiveRoom();
         initListener();
         return rootView;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        IMManager.getInstance().unregister(onHandleMsgListener);
+    }
+
     private void initLiveRoom() {
-        IMUser imUser = new IMUser("", "游客", "");
+        IMUser imUser = new IMUser("1", "游客", "");
         imManager = IMManager.getInstance();
         if (!TextUtils.isEmpty(videoID)) {
             String videoType = "";
@@ -154,6 +168,7 @@ public class IMFragment extends Fragment {
             int giftNum = gift.data.giftNum;
             imAdapter.addItem(gift.nickName + " 送了：" + giftNum + "个" + giftName);
             rollToEnd();
+            giftManager.showContinueGift(gift);
         }
 
         @Override

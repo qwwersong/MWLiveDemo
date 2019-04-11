@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/gift_info_container"
+        android:layout_width="180dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bg_con_gift"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:paddingLeft="35dp">
+
+        <TextView
+            android:id="@+id/tv_sender"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:layout_marginRight="50dp"
+            android:singleLine="true"
+            android:textColor="@android:color/white"
+            android:textSize="11sp" />
+
+        <TextView
+            android:id="@+id/tv_gift_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textColor="#00fcff"
+            android:textSize="11sp" />
+    </LinearLayout>
+
+
+    <ImageView
+        android:id="@+id/iv_sender_head"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/default_avatar_fourarc"
+        android:padding="1px" />
+
+    <View
+        android:id="@+id/gift_icon_bg"
+        android:layout_width="80.0dip"
+        android:layout_height="40.0dip"
+        android:layout_marginTop="20dp"
+        android:layout_toRightOf="@id/gift_info_container"
+        android:background="@drawable/bg_quarter_gift"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/img_gift_icon"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_alignTop="@+id/iv_sender_head"
+        android:layout_marginLeft="-50dp"
+        android:layout_marginRight="10.0dip"
+        android:layout_marginTop="-8dp"
+        android:layout_toRightOf="@id/gift_info_container"
+        android:visibility="invisible" />
+
+    <com.montnets.liveroom.view.gift.MagicTextView
+        android:id="@+id/txt_times"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="-8dp"
+        android:layout_marginTop="6dp"
+        android:layout_toRightOf="@id/img_gift_icon"
+        android:ellipsize="end"
+        android:gravity="center_horizontal"
+        android:paddingLeft="0dp"
+        android:paddingTop="2dp"
+        android:text="x1"
+        android:textColor="#2b94ff"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:visibility="visible"
+        app:foreground="#fff"
+        app:innerShadowDy="0px"
+        app:innerShadowRadius="1dp"
+        app:outerShadowColor="#fff"
+        app:outerShadowDy="1dp"
+        app:outerShadowRadius="1dp"
+        app:strokeColor="#fff"
+        app:strokeJoinStyle="miter"
+        app:strokeWidth="1px" />
+
+</RelativeLayout>

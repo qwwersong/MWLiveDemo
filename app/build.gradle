@@ -41,4 +41,14 @@ dependencies {
     api 'com.flyco.tablayout:FlycoTabLayout_Lib:2.1.2@aar'
     api 'com.github.ctiao:DanmakuFlameMaster:0.8.3'
     api 'com.githang:status-bar-compat:0.7'
+
+    //leakcanary
+//    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
+//    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+//    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+    //礼物
+    api 'io.github.rockerhieu:emojiconize:1.0.0'
+    api 'com.nineoldandroids:library:2.4.0'
+    api 'com.daimajia.easing:library:1.0.1@aar'
+    api 'com.daimajia.androidanimations:library:1.1.3@aar'
 }

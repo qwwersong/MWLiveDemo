@@ -112,9 +112,9 @@ public class VideoActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         audioFocusManager.releaseTheAudioFocus();
-        IMManager.getInstance().logout();
         playerMain.stopPlay();
         playerAuxiliary.stopPlay();
+        IMManager.getInstance().logout();
         imFragment = null;
         fullScreenFragment = null;
         OrientationManager.getInstance().removeRotateListener();
