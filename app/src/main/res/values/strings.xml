@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">梦网视频Demo</string>
+
+    <string name="enter_living_room">&#160;进入直播间</string>
 </resources>

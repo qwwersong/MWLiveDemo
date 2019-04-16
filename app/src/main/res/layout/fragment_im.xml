@@ -15,6 +15,35 @@
         android:layout_height="match_parent"/>
 
     <LinearLayout
+        android:id="@+id/enter_user_ll"
+        android:layout_width="wrap_content"
+        android:layout_height="28dp"
+        android:visibility="invisible"
+        android:background="@drawable/bg_enter_room_user2">
+
+        <TextView
+            android:id="@+id/enter_user_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:ellipsize="end"
+            android:maxEms="8"
+            android:singleLine="true"
+            android:text=""
+            android:textColor="@android:color/white"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/enter_living_room"
+            android:textColor="#CCFFFFFF"
+            android:textSize="14sp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/ll_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

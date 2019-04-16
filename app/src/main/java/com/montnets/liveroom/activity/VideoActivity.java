@@ -169,7 +169,9 @@ public class VideoActivity extends AppCompatActivity {
         if (fullScreenFragment != null) {
             excludeViews.addAll(fullScreenFragment.getExcludeView());
         }
-        excludeViews.addAll(imFragment.getExcludeView());
+        if (imFragment != null) {
+            excludeViews.addAll(imFragment.getExcludeView());
+        }
         DisplayUtil.hideInputWhenTouchOtherView(this, ev, excludeViews,
                 new OnHideKeyboardListener() {
                     @Override

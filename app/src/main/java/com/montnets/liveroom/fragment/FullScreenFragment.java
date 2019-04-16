@@ -22,6 +22,7 @@ import com.montnets.liveroom.im.OnHandleMsgListener;
 import com.montnets.liveroom.im.bean.IMMessage;
 import com.montnets.liveroom.im.bean.MsgCustomize;
 import com.montnets.liveroom.im.bean.MsgGift;
+import com.montnets.liveroom.im.bean.MsgJoinRoom;
 import com.montnets.liveroom.im.bean.MsgMessage;
 import com.montnets.liveroom.im.bean.MsgNotice;
 import com.montnets.liveroom.im.bean.MsgQuestion;
@@ -165,6 +166,11 @@ public class FullScreenFragment extends Fragment {
     }
 
     OnHandleMsgListener onHandleMsgListener = new OnHandleMsgListener() {
+        @Override
+        public void onReceiveEnter(MsgJoinRoom enterRoom) {
+
+        }
+
         @Override
         public void onReceivedMessage(MsgMessage message) {
             String msg = message.data.msgbody;

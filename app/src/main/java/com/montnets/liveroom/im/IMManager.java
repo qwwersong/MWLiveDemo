@@ -88,6 +88,11 @@ public class IMManager {
             switch (cmd) {
                 case SocketConstants.CMD_ROOM_ENTER:
                     MsgJoinRoom msgJoinRoom = gson.fromJson(data, MsgJoinRoom.class);
+                    if (handleMsgListeners != null && handleMsgListeners.size() > 0) {
+                        for (int i = 0; i < handleMsgListeners.size(); i++) {
+                            handleMsgListeners.get(i).onReceiveEnter(msgJoinRoom);
+                        }
+                    }
                     break;
                 case SocketConstants.CMD_ROOM_EXIT:
                     MsgLeaveRoom msgLeaveRoom = gson.fromJson(data, MsgLeaveRoom.class);

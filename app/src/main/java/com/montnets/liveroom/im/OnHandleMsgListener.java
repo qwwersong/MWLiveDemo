@@ -2,6 +2,7 @@ package com.montnets.liveroom.im;
 
 import com.montnets.liveroom.im.bean.MsgCustomize;
 import com.montnets.liveroom.im.bean.MsgGift;
+import com.montnets.liveroom.im.bean.MsgJoinRoom;
 import com.montnets.liveroom.im.bean.MsgMessage;
 import com.montnets.liveroom.im.bean.MsgNotice;
 import com.montnets.liveroom.im.bean.MsgQuestion;
@@ -13,6 +14,11 @@ import com.montnets.liveroom.im.bean.MsgSystemTip;
  * Created by songlei on 2018/12/20.
  */
 public interface OnHandleMsgListener {
+    /**
+     * 收到进入聊天室
+     */
+    void onReceiveEnter(MsgJoinRoom enterRoom);
+
     /**
      * 收到聊天信息
      */

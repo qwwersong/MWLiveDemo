@@ -1,7 +1,10 @@
 package com.montnets.liveroom.fragment;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.app.Dialog;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -11,14 +14,18 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.montnets.liveroom.R;
 import com.montnets.liveroom.VideoConstants;
 import com.montnets.liveroom.adapter.IMAdapter;
+import com.montnets.liveroom.im.bean.MsgJoinRoom;
 import com.montnets.liveroom.view.gift.GiftManager;
 import com.montnets.liveroom.im.IMException;
 import com.montnets.liveroom.im.IMManager;
@@ -37,6 +44,8 @@ import com.montnets.liveroom.im.bean.MsgSystemTip;
 import com.montnets.liveroom.utils.InputMethodUtils;
 import com.montnets.liveroom.view.DialogFactory;
 import com.montnets.liveroom.view.gift.RoomContinueGiftView;
+import com.montnets.mwlive.base.CommonHandler;
+import com.montnets.mwlive.base.LogUtil;
 import com.montnets.mwlive.socket.bean.IMUser;
 
 import java.util.ArrayList;
@@ -46,7 +55,9 @@ import java.util.List;
  * 视频观看详情页-聊天tab
  * Created by songlei on 2018/12/10.
  */
-public class IMFragment extends Fragment {
+public class IMFragment extends Fragment implements CommonHandler.HandlerCallBack {
+    private static final int HIDE_ENTER_VIEW = 1;
+
     private IMAdapter imAdapter;
     private EditText etMsg;
     private Button btSendMsg;
@@ -54,11 +65,27 @@ public class IMFragment extends Fragment {
     private Button btSendGift;
     private RelativeLayout rlRoot;
     private RecyclerView lvChat;
+    private LinearLayout enterUserLl;
+    private TextView enterUserTv;
 
     private IMManager imManager;
     private GiftManager giftManager;
     private String videoID;
     private int type;
+
+    private long lastEnterTime;     //上次进入聊天室时间
+    private long delayTime = 1000;  //延时时间
+
+    private CommonHandler mHandler = new CommonHandler(this);
+
+    @Override
+    public void handleMessage(Message msg) {
+        switch (msg.what) {
+            case HIDE_ENTER_VIEW:
+                hideView();
+                break;
+        }
+    }
 
     public static IMFragment getInstance(String videoID, int type) {
         IMFragment imFragment = new IMFragment();
@@ -76,6 +103,8 @@ public class IMFragment extends Fragment {
         btSendStar = (Button) rootView.findViewById(R.id.bt_send_star);
         btSendGift = (Button) rootView.findViewById(R.id.bt_send_gift);
         rlRoot = (RelativeLayout) rootView.findViewById(R.id.rl_im_root);
+        enterUserLl = (LinearLayout) rootView.findViewById(R.id.enter_user_ll);
+        enterUserTv = (TextView) rootView.findViewById(R.id.enter_user_tv);
         RoomContinueGiftView giftUpView = (RoomContinueGiftView) rootView.findViewById(R.id.continue_gift_up);
         RoomContinueGiftView giftDownView = (RoomContinueGiftView) rootView.findViewById(R.id.continue_gift_down);
 
@@ -155,6 +184,12 @@ public class IMFragment extends Fragment {
     }
 
     private OnHandleMsgListener onHandleMsgListener = new OnHandleMsgListener() {
+        @Override
+        public void onReceiveEnter(MsgJoinRoom enterRoom) {
+            imAdapter.addItem(enterRoom.nickName + " 进入了直播间");
+            dealUserEnterAction(enterRoom);
+        }
+
         @Override
         public void onReceivedMessage(MsgMessage message) {
             String msg = message.data.msgbody;
@@ -250,5 +285,78 @@ public class IMFragment extends Fragment {
 
     public void hideIMKeyboard(){
         InputMethodUtils.hideSoftwareKeyboard(getActivity(), etMsg);
+    }
+
+    private void dealUserEnterAction(MsgJoinRoom msg) {
+        long currentTime = System.currentTimeMillis();
+        long deltaTime = currentTime - lastEnterTime;
+        mHandler.removeMessages(HIDE_ENTER_VIEW);
+        if (deltaTime < 1500) {
+            //连续进入
+            enterUserLl.setVisibility(View.VISIBLE);
+            enterUserTv.setText(msg.nickName);
+            mHandler.sendEmptyMessageDelayed(HIDE_ENTER_VIEW, delayTime);
+        } else {
+            //单个进入
+            enterUserLl.setVisibility(View.VISIBLE);
+            enterUserTv.setText(msg.nickName);
+            showSingleEnter();
+        }
+        lastEnterTime = currentTime;
+    }
+
+    private void showSingleEnter() {
+        ObjectAnimator enterAnim = ObjectAnimator.ofFloat(enterUserLl, "translationX", -enterUserLl.getWidth(), 0);
+        enterAnim.setDuration(1000);
+        enterAnim.setInterpolator(new AccelerateDecelerateInterpolator());
+        enterAnim.start();
+        enterAnim.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mHandler.sendEmptyMessageDelayed(HIDE_ENTER_VIEW, delayTime);// delay时间应该随着变长
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+    }
+
+    private void hideView(){
+        ObjectAnimator hideAnim = ObjectAnimator.ofFloat(enterUserLl, "translationX", 0, -enterUserLl.getWidth());
+        hideAnim.setDuration(1000);
+        hideAnim.start();
+        hideAnim.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
     }
 }
