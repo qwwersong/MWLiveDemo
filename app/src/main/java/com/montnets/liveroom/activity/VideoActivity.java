@@ -52,8 +52,8 @@ import java.util.List;
 import java.util.Map;
 
 public class VideoActivity extends AppCompatActivity {
-    private PlayerView playerMain;
-    private PlayerView playerAuxiliary;
+    private PlayerView playerMain;          //主屏幕
+    private PlayerView playerAuxiliary;     //辅屏幕（小屏幕）
     private ImageView ivPreView;
     private RelativeLayout rlHeader;
     private ImageView ivBack;
@@ -63,16 +63,16 @@ public class VideoActivity extends AppCompatActivity {
     private SlidingTabLayout tabLayout;
 
     private int orientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
-    private int tag = 0;        //是否点击切换大小屏
-    private int type;           //直播间类型：直播、短视频，由列表传入
-    private int liveState = -1;
-    private String videoID;
-    private String videoUrl;
-    private String liveUrl;
+    private int tag = 0;            //点击切换大小屏标示
+    private int type;               //直播间类型
+    private String videoID;         //视频ID：直播ID或者短视频ID
+    private String videoUrl;        //短视频-原码地址
+    private String liveUrl;         //直播-原码地址
+    private String liveAfterUrl;    //直播录像-原码地址
     private boolean isAdd;
 
-    private IMFragment imFragment;
-    private FullScreenFragment fullScreenFragment;
+    private IMFragment imFragment;                      //聊天室Fragment
+    private FullScreenFragment fullScreenFragment;      //全屏Fragment
     private ArrayList<String> rateList;
     private HashMap<String, String> rateMainMap;
     private HashMap<String, String> rateAuxMap;
@@ -316,7 +316,13 @@ public class VideoActivity extends AppCompatActivity {
                                 return;
                             }
                             manager.transToTV(liveUrl, devices.get(position));
-                        } else {
+                        } else if (type == VideoConstants.TYPE_LIVE_RECORD) {
+                            if (TextUtils.isEmpty(liveAfterUrl)) {
+                                Toast.makeText(VideoActivity.this, "视频地址为空！", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            manager.transToTV(liveAfterUrl, devices.get(position));
+                        } else if (type == VideoConstants.TYPE_VIDEO) {
                             if (TextUtils.isEmpty(videoUrl)) {
                                 Toast.makeText(VideoActivity.this, "视频地址为空！", Toast.LENGTH_SHORT).show();
                                 return;
@@ -405,6 +411,7 @@ public class VideoActivity extends AppCompatActivity {
                 final VideoDetail.ObjEntity entity = response.getObj();
                 if (entity != null) {
                     videoUrl = entity.getVideoSource().getPlayUrl();
+                    type = VideoConstants.TYPE_VIDEO;
                     handleVideo(entity);
                 } else {
                     Toast.makeText(VideoActivity.this, "数据返回异常", Toast.LENGTH_LONG).show();
@@ -458,7 +465,7 @@ public class VideoActivity extends AppCompatActivity {
             public void onSuccess(LiveDetail response) {
                 LiveDetail.ObjBean entity = response.getObj();
                 if (entity != null) {
-                    liveState = entity.getLiveStatus();
+                    int liveState = entity.getLiveStatus();
                     switch (liveState) {
                         case 0: //预告
                             String liveCover = entity.getLiveCover();
@@ -471,9 +478,11 @@ public class VideoActivity extends AppCompatActivity {
                             ivTransTv.setVisibility(View.INVISIBLE);
                             break;
                         case 1: //直播中
+                            type = VideoConstants.TYPE_LIVE;
                             handleLiving(entity);
                             break;
                         case 2: //直播结束，观看直播录像
+                            type = VideoConstants.TYPE_LIVE_RECORD;
                             handleLiveEnd(entity);
                             break;
                     }
@@ -548,7 +557,6 @@ public class VideoActivity extends AppCompatActivity {
     }
 
     private void handleLiveEnd(LiveDetail.ObjBean entity) {
-        type = VideoConstants.TYPE_LIVE_RECORD;
         initFragment();
 
         playerMain.initConfig(PlayerView.TYPE_VIDEO);
@@ -559,9 +567,9 @@ public class VideoActivity extends AppCompatActivity {
         rateMainMap.clear();
 
         //设置主屏
-        String liveAfter = entity.getLiveAfterUrl();
+        liveAfterUrl = entity.getLiveAfterUrl();
         rateList.add(VideoConstants.MODEL_ORIGINAL);
-        rateMainMap.put(VideoConstants.MODEL_ORIGINAL, liveAfter);
+        rateMainMap.put(VideoConstants.MODEL_ORIGINAL, liveAfterUrl);
         playerMain.setRateList(rateList);
         playerMain.setRateMap(rateMainMap);
         playerMain.startPlayVideo();

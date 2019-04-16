@@ -136,6 +136,8 @@ public class IMFragment extends Fragment implements CommonHandler.HandlerCallBac
             String videoType = "";
             if (type == VideoConstants.TYPE_LIVE) {
                 videoType = "0";
+            } else if (type == VideoConstants.TYPE_LIVE_RECORD) {
+                videoType = "1";
             } else if (type == VideoConstants.TYPE_VIDEO) {
                 videoType = "2";
             }
