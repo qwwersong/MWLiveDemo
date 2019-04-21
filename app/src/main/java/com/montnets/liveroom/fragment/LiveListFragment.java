@@ -133,9 +133,9 @@ public class LiveListFragment extends Fragment {
             @Override
             public void onSuccess(LiveList response) {
                 if (isLoadMore) {
-                    list.addAll(response.getObj().getList());
+                    list.addAll(response.getData().getList());
                 } else {
-                    list = response.getObj().getList();
+                    list = response.getData().getList();
                 }
                 mVideoAdapter.refreshList(list);
                 mSwipeRefreshView.setRefreshing(false);

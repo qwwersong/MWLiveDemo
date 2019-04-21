@@ -10,7 +10,7 @@ public class VideoDetail implements Serializable {
      */
     private String msg;
     private String code;
-    private ObjEntity obj;
+    private ObjEntity data;
 
     public void setMsg(String msg) {
         this.msg = msg;
@@ -20,8 +20,8 @@ public class VideoDetail implements Serializable {
         this.code = code;
     }
 
-    public void setObj(ObjEntity obj) {
-        this.obj = obj;
+    public void setData(ObjEntity data) {
+        this.data = data;
     }
 
     public String getMsg() {
@@ -32,8 +32,8 @@ public class VideoDetail implements Serializable {
         return code;
     }
 
-    public ObjEntity getObj() {
-        return obj;
+    public ObjEntity getData() {
+        return data;
     }
 
     public class ObjEntity {

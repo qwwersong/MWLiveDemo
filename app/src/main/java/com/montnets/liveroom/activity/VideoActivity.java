@@ -408,7 +408,7 @@ public class VideoActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(VideoDetail response) {
-                final VideoDetail.ObjEntity entity = response.getObj();
+                final VideoDetail.ObjEntity entity = response.getData();
                 if (entity != null) {
                     videoUrl = entity.getVideoSource().getPlayUrl();
                     type = VideoConstants.TYPE_VIDEO;
@@ -463,7 +463,7 @@ public class VideoActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(LiveDetail response) {
-                LiveDetail.ObjBean entity = response.getObj();
+                LiveDetail.ObjBean entity = response.getData();
                 if (entity != null) {
                     int liveState = entity.getLiveStatus();
                     switch (liveState) {
@@ -567,9 +567,23 @@ public class VideoActivity extends AppCompatActivity {
         rateMainMap.clear();
 
         //设置主屏
-        liveAfterUrl = entity.getLiveAfterUrl();
+
+        liveAfterUrl = "http://v.facebac.com/live/5a0bb571341f519f5e4d/332c348c267ce5c4e86e/base/20190415144024/332c348c267ce5c4e86e-20190415144024.m3u8?xstToken=92f0a7f4";
+        String liveUrl480 ="http://testv.facebac.com/live/581daa97b4723c20df9e/d7369b9a9faea2616a4f/base/20190306140524/d7369b9a9faea2616a4f-20190306140524.m3u8?xstToken=276f8109";
+        String liveUrl720 ="http://testv.facebac.com/live/581daa97b4723c20df9e/4068935ff2878d7c02a6/base/20190108111340/4068935ff2878d7c02a6-20190108111340.m3u8?xstToken=66ffffb8";
+
+//        liveAfterUrl = entity.getLiveAfterUrl();
         rateList.add(VideoConstants.MODEL_ORIGINAL);
         rateMainMap.put(VideoConstants.MODEL_ORIGINAL, liveAfterUrl);
+        if (!TextUtils.isEmpty(liveUrl480)) {
+            rateList.add(VideoConstants.MODEL_480P);
+            rateMainMap.put(VideoConstants.MODEL_480P, liveUrl480);
+        }
+        if (!TextUtils.isEmpty(liveUrl720)) {
+            rateList.add(VideoConstants.MODEL_720P);
+            rateMainMap.put(VideoConstants.MODEL_720P, liveUrl720);
+        }
+
         playerMain.setRateList(rateList);
         playerMain.setRateMap(rateMainMap);
         playerMain.startPlayVideo();

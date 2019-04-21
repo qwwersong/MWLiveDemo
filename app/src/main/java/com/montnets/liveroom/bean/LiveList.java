@@ -12,7 +12,7 @@ public class LiveList implements Serializable {
 
     private String code;
     private String msg;
-    private ObjBean obj;
+    private ObjBean data;
 
     public String getCode() {
         return code;
@@ -30,12 +30,12 @@ public class LiveList implements Serializable {
         this.msg = msg;
     }
 
-    public ObjBean getObj() {
-        return obj;
+    public ObjBean getData() {
+        return data;
     }
 
-    public void setObj(ObjBean obj) {
-        this.obj = obj;
+    public void setData(ObjBean data) {
+        this.data = data;
     }
 
     public static class ObjBean {

@@ -2,7 +2,7 @@ package com.montnets.liveroom;
 
 public class RequestConstants {
     //测试域名
-    private static final String TEST_DOMAIN = "http://nxtest.facebac.com";
+    private static final String TEST_DOMAIN = "https://www.zj96596.com.cn:50080";
     private static final String DOMAIN = TEST_DOMAIN;
     //直播列表接口
     public static final String LIVE_LIST_URL = DOMAIN + "/farmbank-server/liveInfo/getLiveInfoList.action";
