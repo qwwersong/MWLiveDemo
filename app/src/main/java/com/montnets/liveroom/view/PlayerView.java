@@ -22,6 +22,7 @@ import com.montnets.liveroom.im.OnPlayerStateListener;
 import com.montnets.liveroom.im.bean.MsgVideoState;
 import com.montnets.liveroom.utils.OrientationManager;
 import com.montnets.mwlive.base.CommonHandler;
+import com.montnets.mwlive.base.LogUtil;
 import com.montnets.mwlive.player.OnPlayerListener;
 import com.montnets.mwlive.player.PlayException;
 import com.montnets.mwlive.player.PlayerConstants;
@@ -35,6 +36,7 @@ import java.util.HashMap;
  * Created by songlei on 2018/12/04.
  */
 public class PlayerView extends RelativeLayout implements CommonHandler.HandlerCallBack {
+    private static final String TAG = "PlayerView";
     public static final int TYPE_LIVE = 1;
     public static final int TYPE_VIDEO = 2;
 
@@ -217,7 +219,7 @@ public class PlayerView extends RelativeLayout implements CommonHandler.HandlerC
 
         @Override
         public void onError(PlayException e) {
-            mediaController.stopProgress();
+            mediaController.onComplete();
             playState = STATE_ERROR;
             videoCover.showTip(e.cause);
         }
@@ -226,6 +228,7 @@ public class PlayerView extends RelativeLayout implements CommonHandler.HandlerC
         public void onPlayState(int code) {
             switch (code) {
                 case PlayerConstants.STATE_PLAYING:
+                    LogUtil.e(TAG, "STATE_PLAYING");
                     videoCover.hide();
                     playState = STATE_PLAY;
                     if (type == TYPE_VIDEO) {
@@ -237,13 +240,15 @@ public class PlayerView extends RelativeLayout implements CommonHandler.HandlerC
                     playState = STATE_PAUSE;
                     break;
                 case PlayerConstants.STATE_FINISH:
+                    LogUtil.e(TAG, "STATE_FINISH");
                     playState = STATE_FINISH;
                     videoCover.showTip("播放结束");
                     if (type == TYPE_VIDEO) {
-                        mediaController.stopProgress();
+                        mediaController.onComplete();
                     }
                     break;
                 case PlayerConstants.STATE_BUFFERING:
+                    LogUtil.e(TAG, "STATE_BUFFERING");
                     if (playState != STATE_FINISH) {//这个判断原因：聊天室流状态和播放器状态在结束时可能会冲突
                         playState = STATE_BUFFING;
                         videoCover.showBuffering();
@@ -311,8 +316,9 @@ public class PlayerView extends RelativeLayout implements CommonHandler.HandlerC
 
     public void stopPlay() {
         if (mediaController != null) {
-            mediaController.stopProgress();
+            mediaController.onComplete();
         }
+        LogUtil.e(TAG, "PlayerView stopPlay()");
         playerView.stopPlay();
         playerView.release();
         IMManager.getInstance().unregisterPlayerListener(onPlayerStateListener);
@@ -505,6 +511,7 @@ public class PlayerView extends RelativeLayout implements CommonHandler.HandlerC
             if (playState == STATE_PAUSE) {
                 mediaController.startPlay();
             } else if (playState == STATE_PLAY) {
+                mediaController.stopTimer();
                 playerView.startPlay(url, mediaController.getCurrentTime());
             }
         }

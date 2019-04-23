@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.montnets.liveroom.R;
+import com.montnets.mwlive.base.LogUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -24,6 +25,7 @@ import java.util.Date;
  * Created by songlei on 2018/11/21.
  */
 public class MyMediaController extends LinearLayout {
+    private static final String TAG = "MyMediaController";
     private Context context;
     private ToggleButton togglePlay;
     private SeekBar seekBar;
@@ -49,8 +51,11 @@ public class MyMediaController extends LinearLayout {
                     if (currentTime > 0) {
                         tv_currentTime.setText(formatTime(currentTime));
                         seekBar.setProgress(currentTime);
-                        if (currentTime == totalTime) {
-                            stopProgress();
+//                        LogUtil.e(TAG, "Handler currentTime = " + currentTime + " totalTime = "
+//                                + totalTime);
+                        if (currentTime >= totalTime) {
+                            onComplete();
+                            return;
                         }
                     } else {
                         tv_currentTime.setText("00:00");
@@ -117,11 +122,12 @@ public class MyMediaController extends LinearLayout {
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                stopTimer();
+//                stopTimer();
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                LogUtil.e(TAG, "seekBar onStopTrackingTouch");
                 onMediaControllerListener.seekTo(seekBar.getProgress());
                 togglePlay.setChecked(true);
             }
@@ -169,12 +175,9 @@ public class MyMediaController extends LinearLayout {
         this.onMediaControllerListener = onMediaControllerListener;
     }
 
-    public void stopProgress() {
+    public void onComplete(){
         isPlayed = false;
-        togglePlay.setChecked(false);
-//        onMediaControllerListener.stopPlay();
-        seekBar.setProgress(0);
-        tv_currentTime.setText("00:00");
+        onMediaControllerListener.stopPlay();
         stopTimer();
     }
 

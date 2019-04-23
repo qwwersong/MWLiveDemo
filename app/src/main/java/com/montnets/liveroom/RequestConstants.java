@@ -16,7 +16,8 @@ public class RequestConstants {
 
     //请求聊天室IP以及ID接口
 //    private static final String TEST_SOCKET_DOMAIN = "http://nxtrtest.facebac.com:9882";
-    private static final String TEST_SOCKET_DOMAIN = "http://218.25.208.125:9882";
+    private static final String TEST_SOCKET_DOMAIN = "http://nxwwtest.mvaas.cn";
+//    private static final String TEST_SOCKET_DOMAIN = "http://218.25.208.125:9882";
     public static final String IM_URL = TEST_SOCKET_DOMAIN + "/dispatcher.action";
 
 }

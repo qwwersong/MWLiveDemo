@@ -20,8 +20,8 @@ import com.montnets.liveroom.im.bean.MsgSilence;
 import com.montnets.liveroom.im.bean.MsgStar;
 import com.montnets.liveroom.im.bean.MsgSystemTip;
 import com.montnets.liveroom.im.bean.MsgVideoState;
+import com.montnets.liveroom.utils.GsonUtil;
 import com.montnets.mwlive.LiveRoom;
-import com.montnets.mwlive.base.GsonUtil;
 import com.montnets.mwlive.net.NetBusiness;
 import com.montnets.mwlive.net.OkRespCallBack;
 import com.montnets.mwlive.socket.OnReceivedMsgListener;
@@ -200,6 +200,9 @@ public class IMManager {
         try {
             if (mCommonMsgObj == null) {
                 mCommonMsgObj = new JSONObject();
+            }
+            if (user == null) {
+                return;
             }
             mCommonMsgObj.put("nickName", user.nickName)
                     .put("imgUrl", user.imgUrl)

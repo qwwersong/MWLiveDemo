@@ -2,6 +2,7 @@ package com.montnets.liveroom.view;
 
 import android.content.Context;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.montnets.mwlive.base.ScreenUtil;
@@ -25,7 +26,9 @@ public class PlayerLayoutManager {
 
         int width_small = ScreenUtil.dip2px(context, 200);
         int height_small = width_small * 9 / 16;
-        layoutParamsSmall = new RelativeLayout.LayoutParams(width_small, height_small);
+        ViewGroup.MarginLayoutParams mp = new ViewGroup.MarginLayoutParams(width_small, height_small);
+        mp.setMargins(0, 0, ScreenUtil.dip2px(context, 20), ScreenUtil.dip2px(context, 20));
+        layoutParamsSmall = new RelativeLayout.LayoutParams(mp);
         layoutParamsSmall.addRule(RelativeLayout.ALIGN_BOTTOM);
         layoutParamsSmall.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 

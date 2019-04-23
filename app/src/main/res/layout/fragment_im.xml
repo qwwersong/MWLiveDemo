@@ -59,34 +59,44 @@
             android:layout_height="wrap_content"
             android:hint="请输入聊天内容"/>
 
-        <Button
+        <ImageView
             android:id="@+id/bt_send_msg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="发送"/>
+            android:layout_margin="5dp"
+            android:src="@drawable/ic_chat"/>
 
     </LinearLayout>
 
-
+    <com.montnets.liveroom.view.praise.HiPraiseAnimationView
+        android:id="@+id/praise_view"
+        android:layout_width="60dp"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/ll_bottom"
+        android:layout_alignParentRight="true"/>
 
     <LinearLayout
         android:id="@+id/ll_bottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/ll_input"
         android:layout_alignParentRight="true"
+        android:layout_marginRight="5dp"
         android:orientation="vertical">
 
-        <Button
-            android:id="@+id/bt_send_star"
+        <TextView
+            android:id="@+id/tv_send_star"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="点赞"/>
+            android:background="@drawable/ic_praise"/>
 
-        <Button
+        <ImageView
             android:id="@+id/bt_send_gift"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="礼物"/>
+            android:layout_marginTop="5dp"
+            android:layout_gravity="end"
+            android:src="@drawable/ic_exceptional"/>
 
     </LinearLayout>
 

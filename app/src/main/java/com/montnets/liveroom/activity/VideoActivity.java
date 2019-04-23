@@ -73,7 +73,8 @@ public class VideoActivity extends AppCompatActivity {
 
     private IMFragment imFragment;                      //聊天室Fragment
     private FullScreenFragment fullScreenFragment;      //全屏Fragment
-    private ArrayList<String> rateList;
+    private ArrayList<String> rateMainList;
+    private ArrayList<String> rateAuxList;
     private HashMap<String, String> rateMainMap;
     private HashMap<String, String> rateAuxMap;
     private AudioFocusManager audioFocusManager;
@@ -222,7 +223,8 @@ public class VideoActivity extends AppCompatActivity {
         ivBack = (ImageView) findViewById(R.id.iv_back);
         ivTransTv = (ImageView) findViewById(R.id.iv_trans_tv);
 
-        rateList = new ArrayList<>();
+        rateMainList = new ArrayList<>();
+        rateAuxList = new ArrayList<>();
         rateMainMap = new HashMap<>();
         rateAuxMap = new HashMap<>();
     }
@@ -436,18 +438,18 @@ public class VideoActivity extends AppCompatActivity {
         String videoUrl480 = entity.getVideoSource().getPlayUrl480();
         String videoUrl720 = entity.getVideoSource().getPlayUrl720();
         if (!TextUtils.isEmpty(videoUrl)) {
-            rateList.add(VideoConstants.MODEL_ORIGINAL);
+            rateMainList.add(VideoConstants.MODEL_ORIGINAL);
             rateMainMap.put(VideoConstants.MODEL_ORIGINAL, videoUrl);
         }
         if (!TextUtils.isEmpty(videoUrl480)) {
-            rateList.add(VideoConstants.MODEL_480P);
+            rateMainList.add(VideoConstants.MODEL_480P);
             rateMainMap.put(VideoConstants.MODEL_480P, videoUrl480);
         }
         if (!TextUtils.isEmpty(videoUrl720)) {
-            rateList.add(VideoConstants.MODEL_720P);
+            rateMainList.add(VideoConstants.MODEL_720P);
             rateMainMap.put(VideoConstants.MODEL_720P, videoUrl720);
         }
-        playerMain.setRateList(rateList);
+        playerMain.setRateList(rateMainList);
         playerMain.setRateMap(rateMainMap);
         playerMain.startPlayVideo();
     }
@@ -514,18 +516,18 @@ public class VideoActivity extends AppCompatActivity {
         String liveUrl720 = entity.getPlayUrl720();
 
         if (!TextUtils.isEmpty(liveUrl)) {
-            rateList.add(VideoConstants.MODEL_ORIGINAL);
+            rateMainList.add(VideoConstants.MODEL_ORIGINAL);
             rateMainMap.put(VideoConstants.MODEL_ORIGINAL, liveUrl);
         }
         if (!TextUtils.isEmpty(liveUrl480)) {
-            rateList.add(VideoConstants.MODEL_480P);
+            rateMainList.add(VideoConstants.MODEL_480P);
             rateMainMap.put(VideoConstants.MODEL_480P, liveUrl480);
         }
         if (!TextUtils.isEmpty(liveUrl720)) {
-            rateList.add(VideoConstants.MODEL_720P);
+            rateMainList.add(VideoConstants.MODEL_720P);
             rateMainMap.put(VideoConstants.MODEL_720P, liveUrl720);
         }
-        playerMain.setRateList(rateList);
+        playerMain.setRateList(rateMainList);
         playerMain.setRateMap(rateMainMap);
         playerMain.startPlayLive();
 
@@ -536,18 +538,18 @@ public class VideoActivity extends AppCompatActivity {
             String slaveUrl480 = entity.getSlaveLiveInfo().getPlayUrl480();
             String slaveUrl720 = entity.getSlaveLiveInfo().getPlayUrl720();
             if (!TextUtils.isEmpty(slaveUrl)) {
-                rateList.add(VideoConstants.MODEL_ORIGINAL);
+                rateAuxList.add(VideoConstants.MODEL_ORIGINAL);
                 rateAuxMap.put(VideoConstants.MODEL_ORIGINAL, slaveUrl);
             }
             if (!TextUtils.isEmpty(slaveUrl480)) {
-                rateList.add(VideoConstants.MODEL_ORIGINAL);
+                rateAuxList.add(VideoConstants.MODEL_ORIGINAL);
                 rateAuxMap.put(VideoConstants.MODEL_ORIGINAL, slaveUrl480);
             }
             if (!TextUtils.isEmpty(slaveUrl720)) {
-                rateList.add(VideoConstants.MODEL_ORIGINAL);
+                rateAuxList.add(VideoConstants.MODEL_ORIGINAL);
                 rateAuxMap.put(VideoConstants.MODEL_ORIGINAL, slaveUrl720);
             }
-            playerAuxiliary.setRateList(rateList);
+            playerAuxiliary.setRateList(rateAuxList);
             playerAuxiliary.setRateMap(rateAuxMap);
             if (!TextUtils.isEmpty(slaveUrl)) {
                 playerAuxiliary.setVisibility(View.VISIBLE);
@@ -563,8 +565,10 @@ public class VideoActivity extends AppCompatActivity {
         playerAuxiliary.initConfig(PlayerView.TYPE_VIDEO);
         playerMain.enableShowHeader(true);
         playerAuxiliary.enableShowHeader(true);
-        rateList.clear();
+		rateMainList.clear();
+        rateAuxList.clear();
         rateMainMap.clear();
+        rateAuxMap.clear();
 
         //设置主屏
 
@@ -573,33 +577,44 @@ public class VideoActivity extends AppCompatActivity {
         String liveUrl720 ="http://testv.facebac.com/live/581daa97b4723c20df9e/4068935ff2878d7c02a6/base/20190108111340/4068935ff2878d7c02a6-20190108111340.m3u8?xstToken=66ffffb8";
 
 //        liveAfterUrl = entity.getLiveAfterUrl();
-        rateList.add(VideoConstants.MODEL_ORIGINAL);
+        rateMainList.add(VideoConstants.MODEL_ORIGINAL);
         rateMainMap.put(VideoConstants.MODEL_ORIGINAL, liveAfterUrl);
         if (!TextUtils.isEmpty(liveUrl480)) {
-            rateList.add(VideoConstants.MODEL_480P);
+            rateMainList.add(VideoConstants.MODEL_480P);
             rateMainMap.put(VideoConstants.MODEL_480P, liveUrl480);
         }
         if (!TextUtils.isEmpty(liveUrl720)) {
-            rateList.add(VideoConstants.MODEL_720P);
+            rateMainList.add(VideoConstants.MODEL_720P);
             rateMainMap.put(VideoConstants.MODEL_720P, liveUrl720);
         }
 
-        playerMain.setRateList(rateList);
+        playerMain.setRateList(rateMainList);
         playerMain.setRateMap(rateMainMap);
         playerMain.startPlayVideo();
 
         //设置辅屏
-        if (entity.getSlaveLiveInfo() == null) {
-            return;
-        }
-        String slaveLiveAfter = entity.getSlaveLiveInfo().getLiveAfterUrl();
+        
+//        if (entity.getSlaveLiveInfo() == null) {
+//            return;
+//        }
+//        String slaveLiveAfter = entity.getSlaveLiveInfo().getLiveAfterUrl();
+        String slaveLiveAfter = "http://v.facebac.com/live/5a0bb571341f519f5e4d/332c348c267ce5c4e86e/base/20190415144024/332c348c267ce5c4e86e-20190415144024.m3u8?xstToken=92f0a7f4";
         if (TextUtils.isEmpty(slaveLiveAfter)) {
             playerAuxiliary.setVisibility(View.GONE);
         } else {
-            rateList.add(VideoConstants.MODEL_ORIGINAL);
+            rateAuxList.add(VideoConstants.MODEL_ORIGINAL);
             rateAuxMap.put(VideoConstants.MODEL_ORIGINAL, slaveLiveAfter);
-            playerAuxiliary.setRateList(rateList);
-            playerAuxiliary.setRateMap(rateMainMap);
+
+            if (!TextUtils.isEmpty(liveUrl480)) {
+                rateAuxList.add(VideoConstants.MODEL_480P);
+                rateAuxMap.put(VideoConstants.MODEL_480P, liveUrl480);
+            }
+            if (!TextUtils.isEmpty(liveUrl720)) {
+                rateAuxList.add(VideoConstants.MODEL_720P);
+                rateAuxMap.put(VideoConstants.MODEL_720P, liveUrl720);
+            }
+            playerAuxiliary.setRateList(rateAuxList);
+            playerAuxiliary.setRateMap(rateAuxMap);
             playerAuxiliary.setVisibility(View.VISIBLE);
             playerAuxiliary.startPlayVideo();
         }

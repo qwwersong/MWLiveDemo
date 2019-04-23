@@ -3,6 +3,8 @@ package com.montnets.liveroom.fragment;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Dialog;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.Nullable;
@@ -15,8 +17,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -25,8 +27,6 @@ import android.widget.Toast;
 import com.montnets.liveroom.R;
 import com.montnets.liveroom.VideoConstants;
 import com.montnets.liveroom.adapter.IMAdapter;
-import com.montnets.liveroom.im.bean.MsgJoinRoom;
-import com.montnets.liveroom.view.gift.GiftManager;
 import com.montnets.liveroom.im.IMException;
 import com.montnets.liveroom.im.IMManager;
 import com.montnets.liveroom.im.OnHandleMsgListener;
@@ -35,6 +35,7 @@ import com.montnets.liveroom.im.bean.IMGift;
 import com.montnets.liveroom.im.bean.IMMessage;
 import com.montnets.liveroom.im.bean.MsgCustomize;
 import com.montnets.liveroom.im.bean.MsgGift;
+import com.montnets.liveroom.im.bean.MsgJoinRoom;
 import com.montnets.liveroom.im.bean.MsgMessage;
 import com.montnets.liveroom.im.bean.MsgNotice;
 import com.montnets.liveroom.im.bean.MsgQuestion;
@@ -43,9 +44,12 @@ import com.montnets.liveroom.im.bean.MsgStar;
 import com.montnets.liveroom.im.bean.MsgSystemTip;
 import com.montnets.liveroom.utils.InputMethodUtils;
 import com.montnets.liveroom.view.DialogFactory;
+import com.montnets.liveroom.view.gift.GiftManager;
 import com.montnets.liveroom.view.gift.RoomContinueGiftView;
+import com.montnets.liveroom.view.praise.HiPraiseAnimationView;
+import com.montnets.liveroom.view.praise.HiPraiseWithCallback;
+import com.montnets.liveroom.view.praise.OnDrawCallback;
 import com.montnets.mwlive.base.CommonHandler;
-import com.montnets.mwlive.base.LogUtil;
 import com.montnets.mwlive.socket.bean.IMUser;
 
 import java.util.ArrayList;
@@ -60,13 +64,14 @@ public class IMFragment extends Fragment implements CommonHandler.HandlerCallBac
 
     private IMAdapter imAdapter;
     private EditText etMsg;
-    private Button btSendMsg;
-    private Button btSendStar;
-    private Button btSendGift;
+    private ImageView btSendMsg;
+    private TextView tvSendStar;
+    private ImageView btSendGift;
     private RelativeLayout rlRoot;
     private RecyclerView lvChat;
     private LinearLayout enterUserLl;
     private TextView enterUserTv;
+    private HiPraiseAnimationView praiseView;
 
     private IMManager imManager;
     private GiftManager giftManager;
@@ -99,12 +104,13 @@ public class IMFragment extends Fragment implements CommonHandler.HandlerCallBac
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_im, container, false);
         etMsg = (EditText) rootView.findViewById(R.id.et_msg);
-        btSendMsg = (Button) rootView.findViewById(R.id.bt_send_msg);
-        btSendStar = (Button) rootView.findViewById(R.id.bt_send_star);
-        btSendGift = (Button) rootView.findViewById(R.id.bt_send_gift);
+        btSendMsg = (ImageView) rootView.findViewById(R.id.bt_send_msg);
+        tvSendStar = (TextView) rootView.findViewById(R.id.tv_send_star);
+        btSendGift = (ImageView) rootView.findViewById(R.id.bt_send_gift);
         rlRoot = (RelativeLayout) rootView.findViewById(R.id.rl_im_root);
         enterUserLl = (LinearLayout) rootView.findViewById(R.id.enter_user_ll);
         enterUserTv = (TextView) rootView.findViewById(R.id.enter_user_tv);
+        praiseView = (HiPraiseAnimationView) rootView.findViewById(R.id.praise_view);
         RoomContinueGiftView giftUpView = (RoomContinueGiftView) rootView.findViewById(R.id.continue_gift_up);
         RoomContinueGiftView giftDownView = (RoomContinueGiftView) rootView.findViewById(R.id.continue_gift_down);
 
@@ -121,6 +127,12 @@ public class IMFragment extends Fragment implements CommonHandler.HandlerCallBac
         initLiveRoom();
         initListener();
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        praiseView.start();
     }
 
     @Override
@@ -154,6 +166,9 @@ public class IMFragment extends Fragment implements CommonHandler.HandlerCallBac
             public void onClick(View view) {
                 String msg = etMsg.getText().toString().trim();
                 if (!TextUtils.isEmpty(msg)) {
+                    if (imManager == null) {
+                        return;
+                    }
                     imManager.sendMessage(new IMMessage(msg));
                     etMsg.setText("");
                     InputMethodUtils.hideSoftwareKeyboard(getActivity(), etMsg);
@@ -163,16 +178,27 @@ public class IMFragment extends Fragment implements CommonHandler.HandlerCallBac
             }
         });
 
-        btSendStar.setOnClickListener(new View.OnClickListener() {
+        tvSendStar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                imManager.sendStar();
+                praiseView.addPraise(new HiPraiseWithCallback(getHeartBitmap(), new OnDrawCallback() {
+                    @Override
+                    public void onFinish() {
+                        if (imManager == null) {
+                            return;
+                        }
+                        //imManager.sendStar();
+                    }
+                }));
             }
         });
 
         btSendGift.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (imManager == null) {
+                    return;
+                }
                 imManager.sendGift(new IMGift("糖", 1, "11", ""));
             }
         });
@@ -183,6 +209,11 @@ public class IMFragment extends Fragment implements CommonHandler.HandlerCallBac
                 InputMethodUtils.hideSoftwareKeyboard(getActivity(), etMsg);
             }
         });
+    }
+
+    private Bitmap getHeartBitmap(){
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_like);
+        return bitmap;
     }
 
     private OnHandleMsgListener onHandleMsgListener = new OnHandleMsgListener() {
