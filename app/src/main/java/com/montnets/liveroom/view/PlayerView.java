@@ -511,7 +511,6 @@ public class PlayerView extends RelativeLayout implements CommonHandler.HandlerC
             if (playState == STATE_PAUSE) {
                 mediaController.startPlay();
             } else if (playState == STATE_PLAY) {
-                mediaController.stopTimer();
                 playerView.startPlay(url, mediaController.getCurrentTime());
             }
         }

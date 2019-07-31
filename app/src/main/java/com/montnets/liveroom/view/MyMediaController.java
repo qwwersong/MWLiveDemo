@@ -102,14 +102,12 @@ public class MyMediaController extends LinearLayout {
                     } else {
                         onMediaControllerListener.resumePlay();
                     }
-//                    startTimer();
                 } else {
                     if (seekBar.getProgress() == 100) {
                         onMediaControllerListener.stopPlay();
                     } else {
                         onMediaControllerListener.pausePlay();
                     }
-                    stopTimer();
                 }
             }
         });
@@ -186,6 +184,7 @@ public class MyMediaController extends LinearLayout {
     }
 
     public void startTimer() {
+        stopTimer();
         handler.sendEmptyMessageDelayed(1, 1000);
     }
 
