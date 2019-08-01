@@ -392,7 +392,7 @@ public class PlayerView extends RelativeLayout implements CommonHandler.HandlerC
         if (newConfig.orientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE ||
                 newConfig.orientation == ActivityInfo.SCREEN_ORIENTATION_USER) {
             if (isMain) {
-                playerView.setScaleType(PlayerConstants.VIDEO_SCALE_FILL);
+//                playerView.setScaleType(PlayerConstants.VIDEO_SCALE_FILL);
                 layoutManager.setLayoutType(rlContainer, PlayerLayoutManager.TYPE_FULL);
                 if (type == TYPE_VIDEO) {
                     if (handler.hasMessages(MSG_HIDE)) {
@@ -403,7 +403,7 @@ public class PlayerView extends RelativeLayout implements CommonHandler.HandlerC
             }
         } else {
             if (isMain) {
-                playerView.setScaleType(PlayerConstants.VIDEO_SCALE_FIT);
+//                playerView.setScaleType(PlayerConstants.VIDEO_SCALE_FIT);
                 layoutManager.setLayoutType(rlContainer, PlayerLayoutManager.TYPE_BIG);
                 if (type == TYPE_VIDEO) {
                     if (handler.hasMessages(MSG_HIDE)) {

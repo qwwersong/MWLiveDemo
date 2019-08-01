@@ -23,12 +23,14 @@
                 android:id="@+id/player_view_main"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@android:color/black"
                 app:isMain="true"/>
 
             <com.montnets.liveroom.view.PlayerView
                 android:id="@+id/player_view_auxiliary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@android:color/black"
                 android:visibility="gone"
                 app:isMain="false"/>
 

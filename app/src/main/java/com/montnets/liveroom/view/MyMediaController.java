@@ -51,8 +51,7 @@ public class MyMediaController extends LinearLayout {
                     if (currentTime > 0) {
                         tv_currentTime.setText(formatTime(currentTime));
                         seekBar.setProgress(currentTime);
-//                        LogUtil.e(TAG, "Handler currentTime = " + currentTime + " totalTime = "
-//                                + totalTime);
+                        LogUtil.e(TAG, "Handler currentTime = " + currentTime + " totalTime = " + totalTime);
                         if (currentTime >= totalTime) {
                             onComplete();
                             return;
@@ -120,14 +119,14 @@ public class MyMediaController extends LinearLayout {
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-//                stopTimer();
+                stopTimer();
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                LogUtil.e(TAG, "seekBar onStopTrackingTouch");
                 onMediaControllerListener.seekTo(seekBar.getProgress());
                 togglePlay.setChecked(true);
+                startTimer();
             }
         });
 
@@ -185,7 +184,7 @@ public class MyMediaController extends LinearLayout {
 
     public void startTimer() {
         stopTimer();
-        handler.sendEmptyMessageDelayed(1, 1000);
+        handler.sendEmptyMessage(1);
     }
 
     public void startPlay() {
