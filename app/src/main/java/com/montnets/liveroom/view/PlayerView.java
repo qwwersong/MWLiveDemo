@@ -264,6 +264,10 @@ public class PlayerView extends RelativeLayout implements CommonHandler.HandlerC
     OnPlayerStateListener onPlayerStateListener = new OnPlayerStateListener() {
         @Override
         public void onPlayerState(MsgVideoState msgVideoState) {
+            //直播和会放，2002信令返回消息一定要区分
+            if (type != TYPE_LIVE) {
+                return;
+            }
             if (isMain) {
                 setVideoState(msgVideoState.data.live_status);
             } else {
@@ -318,7 +322,6 @@ public class PlayerView extends RelativeLayout implements CommonHandler.HandlerC
         if (mediaController != null) {
             mediaController.onComplete();
         }
-        LogUtil.e(TAG, "PlayerView stopPlay()");
         playerView.stopPlay();
         playerView.release();
         IMManager.getInstance().unregisterPlayerListener(onPlayerStateListener);
@@ -392,7 +395,6 @@ public class PlayerView extends RelativeLayout implements CommonHandler.HandlerC
         if (newConfig.orientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE ||
                 newConfig.orientation == ActivityInfo.SCREEN_ORIENTATION_USER) {
             if (isMain) {
-//                playerView.setScaleType(PlayerConstants.VIDEO_SCALE_FILL);
                 layoutManager.setLayoutType(rlContainer, PlayerLayoutManager.TYPE_FULL);
                 if (type == TYPE_VIDEO) {
                     if (handler.hasMessages(MSG_HIDE)) {
@@ -403,7 +405,6 @@ public class PlayerView extends RelativeLayout implements CommonHandler.HandlerC
             }
         } else {
             if (isMain) {
-//                playerView.setScaleType(PlayerConstants.VIDEO_SCALE_FIT);
                 layoutManager.setLayoutType(rlContainer, PlayerLayoutManager.TYPE_BIG);
                 if (type == TYPE_VIDEO) {
                     if (handler.hasMessages(MSG_HIDE)) {
